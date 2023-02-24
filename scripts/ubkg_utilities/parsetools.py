@@ -30,9 +30,17 @@ def codeReplacements(x, ingestSAB: str):
     # 2. Consolidate some string handling.
     # 3. Break up the original string replacement for ease of debugging.
 
+    
+    # Keep underscores for these SABs and there Codes. -Ben 
+    # Removed the ".str.replace('_', ' ')" snippet from the line below this and put it under this if statement
+    if OWL_SAB not in ['GTEX_COEXP','LINCS','MSIGDB','CMAP','CLINVAR','HUBMAPSC','SCHEART_PMID_31835037','HGNC_HPO',
+            'HPO_MP','HCOP','MP','HCOP_MP','HGNC_ANNOS','GTEX_EXP','GTEX_EQTL','KF']:
+        ret = x.str.replace('_', ' ')
+        
+        
     # Convert the code string to the CodeID format.
     # This is sufficient for all cases except EDAM, for which underscores will be restored.
-    ret = x.str.replace(':', ' ').str.replace('#', ' ').str.replace('_', ' ').str.split('/').str[-1]
+    ret = x.str.replace(':', ' ').str.replace('#', ' ').str.split('/').str[-1]
 
     # Convert SABs to expected values.
     # NCI
