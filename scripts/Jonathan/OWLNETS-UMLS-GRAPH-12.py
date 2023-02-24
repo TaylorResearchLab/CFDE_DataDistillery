@@ -895,146 +895,163 @@ del newCUI_CODEs
 
 # #### Load SUIs from csv
 
+node_metadata = node_metadata.replace('nan',np.nan)
+
 # In[23]:
+if node_metadata['node_label'].isna().all():
+    print('All node_labels are NaN. Skipping "Appending SUIs" code block.')
+else:
+    SUIs = pd.read_csv(csv_path("SUIs.csv"))
+    # SUIs supposedly unique but...discovered 5 NaN names in SUIs.csv and drop them here
+    # ?? from ASCII converstion for Oracle to Pandas conversion on original UMLS-Graph-Extracts ??
+    SUIs = SUIs.dropna().drop_duplicates().reset_index(drop=True)
 
-SUIs = pd.read_csv(csv_path("SUIs.csv"))
-# SUIs supposedly unique but...discovered 5 NaN names in SUIs.csv and drop them here
-# ?? from ASCII converstion for Oracle to Pandas conversion on original UMLS-Graph-Extracts ??
-SUIs = SUIs.dropna().drop_duplicates().reset_index(drop=True)
+    # #### Write SUIs (SUI:ID,name) part 1, from label - with existence check
+    # In[24]:
+    print('Appending to SUIs.csv...')
 
-# #### Write SUIs (SUI:ID,name) part 1, from label - with existence check
+    if node_metadata.isna().sum()['node_label']: 
+        newSUIs = node_metadata.dropna(subset=['node_label']).merge(
+            SUIs, how='left', left_on='node_label', right_on='name')[
+               ['node_id', 'node_label', 'CUI', 'SUI:ID', 'name']] 
+    else:
+        newSUIs = node_metadata.merge(SUIs, how='left', left_on='node_label', right_on='name')[
+        ['node_id', 'node_label', 'CUI', 'SUI:ID', 'name']]
 
-# In[24]:
-print('Appending to SUIs.csv...')
+    # for Term.name that don't join with node_label update the SUI:ID with base64 of node_label
+    newSUIs.loc[(newSUIs['name'] != newSUIs['node_label']), 'SUI:ID'] = \
+        newSUIs[newSUIs['name'] != newSUIs['node_label']]['node_label'].apply(base64it).str[0]
 
-newSUIs = node_metadata.merge(SUIs, how='left', left_on='node_label', right_on='name')[
-    ['node_id', 'node_label', 'CUI', 'SUI:ID', 'name']]
+    # change field names and isolate non-matched ones (don't exist in SUIs file)
+    newSUIs.columns = ['node_id', 'name', 'CUI', 'SUI:ID', 'OLDname']
+    newSUIs = newSUIs[newSUIs['OLDname'].isnull()][['node_id', 'name', 'CUI', 'SUI:ID']]
+    newSUIs = newSUIs.dropna().drop_duplicates().reset_index(drop=True)
+    newSUIs = newSUIs[['SUI:ID', 'name']]
 
-# for Term.name that don't join with node_label update the SUI:ID with base64 of node_label
-newSUIs.loc[(newSUIs['name'] != newSUIs['node_label']), 'SUI:ID'] = \
-    newSUIs[newSUIs['name'] != newSUIs['node_label']]['node_label'].apply(base64it).str[0]
+    # update the SUIs dataframe to total those that will be in SUIs.csv
+    SUIs = pd.concat([SUIs, newSUIs], axis=0).reset_index(drop=True)
 
-# change field names and isolate non-matched ones (don't exist in SUIs file)
-newSUIs.columns = ['node_id', 'name', 'CUI', 'SUI:ID', 'OLDname']
-newSUIs = newSUIs[newSUIs['OLDname'].isnull()][['node_id', 'name', 'CUI', 'SUI:ID']]
-newSUIs = newSUIs.dropna().drop_duplicates().reset_index(drop=True)
-newSUIs = newSUIs[['SUI:ID', 'name']]
+    # write out newSUIs - comment out during development
+    newSUIs.to_csv(csv_path('SUIs.csv'), mode='a', header=False, index=False)
 
-# update the SUIs dataframe to total those that will be in SUIs.csv
-SUIs = pd.concat([SUIs, newSUIs], axis=0).reset_index(drop=True)
-
-# write out newSUIs - comment out during development
-newSUIs.to_csv(csv_path('SUIs.csv'), mode='a', header=False, index=False)
-
-# del newSUIs - not here because we use this dataframe name later
-
-
-# #### Write CUI-SUIs (:START_ID,:END_ID)
-print('Appending to CUI-SUIs.csv...')
-# In[25]:
-
-# get the newCUIs associated metadata (CUIs are unique in node_metadata)
-newCUI_SUIs = newCUIs.merge(node_metadata, how='inner', left_on='CUI:ID', right_on='CUI')
-newCUI_SUIs = newCUI_SUIs[['node_label', 'CUI']].dropna().drop_duplicates().reset_index(drop=True)
-
-# get the SUIs matches
-newCUI_SUIs = newCUI_SUIs.merge(SUIs, how='left', left_on='node_label', right_on='name')[
-    ['CUI', 'SUI:ID']].dropna().drop_duplicates().reset_index(drop=True)
-newCUI_SUIs.columns = [':START:ID', ':END_ID']
-
-# write/append - comment out during development
-newCUI_SUIs.to_csv(csv_path('CUI-SUIs.csv'), mode='a', header=False, index=False)
-
-# del newCUIs
-# del newCUI_SUIs
+    # del newSUIs - not here because we use this dataframe name later
 
 
-# #### Load CODE-SUIs and reduce to PT or SY
+    # #### Write CUI-SUIs (:START_ID,:END_ID)
+    print('Appending to CUI-SUIs.csv...')
+    # In[25]:
 
-# In[26]:
+    # get the newCUIs associated metadata (CUIs are unique in node_metadata)
+    newCUI_SUIs = newCUIs.merge(node_metadata, how='inner', left_on='CUI:ID', right_on='CUI')
+    newCUI_SUIs = newCUI_SUIs[['node_label', 'CUI']].dropna().drop_duplicates().reset_index(drop=True)
 
-print('Appending to CODE-SUIs.csv...')
-CODE_SUIs = pd.read_csv(csv_path("CODE-SUIs.csv"))
-CODE_SUIs = CODE_SUIs[((CODE_SUIs[':TYPE'] == 'PT') | (CODE_SUIs[':TYPE'] == 'SY'))]
-CODE_SUIs = CODE_SUIs.dropna().drop_duplicates().reset_index(drop=True)
+    # get the SUIs matches
+    newCUI_SUIs = newCUI_SUIs.merge(SUIs, how='left', left_on='node_label', right_on='name')[
+        ['CUI', 'SUI:ID']].dropna().drop_duplicates().reset_index(drop=True)
+    newCUI_SUIs.columns = [':START:ID', ':END_ID']
 
-# #### Write CODE-SUIs (:END_ID,:START_ID,:TYPE,CUI) part 1, from label - with existence check
+    # write/append - comment out during development
+    newCUI_SUIs.to_csv(csv_path('CUI-SUIs.csv'), mode='a', header=False, index=False)
 
-# In[27]:
+    # del newCUIs
+    # del newCUI_SUIs
 
 
-# This does NOT (yet) address two different owl files asserting two different SUIs as PT with the same CUI,CodeID by choosing the first one in the build process (by comparing only three columns in the existence check) - a Code/CUI would thus have only one PT relationship (to only one SUI) so that is not guaranteed right now (its good practice in query to deduplicate anyway results - because for example even fully addressed two PT relationships could exist between a CODE and SUI if they are asserted on different CUIs) - to assert a vocabulary-specific relationship type as vocabulary-specific preferred term (an ingest parameter perhaps) one would create a PT (if it doesn't have one) and a SAB_PT - that is the solution for an SAB that wants to assert PT on someone else's Code (CCF may want this so there could be CCF_PT Terms on UBERON codes) - note that for SY later, this is not an issue because SY are expected to be multiple and so we use all four columns in the existence check there too but intend to keep that one that way.
+    # #### Load CODE-SUIs and reduce to PT or SY
 
-# get the SUIs matches
-newCODE_SUIs = node_metadata.merge(SUIs, how='left', left_on='node_label', right_on='name')[
-    ['SUI:ID', 'node_id', 'CUI']].dropna().drop_duplicates().reset_index(drop=True)
-newCODE_SUIs.insert(2, ':TYPE', 'PT')
-newCODE_SUIs.columns = [':END_ID', ':START_ID', ':TYPE', 'CUI']
+    # In[26]:
 
-# Here we isolate only the rows not already matching in existing files
-df = newCODE_SUIs.drop_duplicates().merge(CODE_SUIs.drop_duplicates(), on=CODE_SUIs.columns.to_list(), how='left',
-                                          indicator=True)
-newCODE_SUIs = df.loc[df._merge == 'left_only', df.columns != '_merge']
-newCODE_SUIs.reset_index(drop=True, inplace=True)
+    print('Appending to CODE-SUIs.csv...')
+    CODE_SUIs = pd.read_csv(csv_path("CODE-SUIs.csv"))
+    CODE_SUIs = CODE_SUIs[((CODE_SUIs[':TYPE'] == 'PT') | (CODE_SUIs[':TYPE'] == 'SY'))]
+    CODE_SUIs = CODE_SUIs.dropna().drop_duplicates().reset_index(drop=True)
 
-# write out newCODE_SUIs - comment out during development
-newCODE_SUIs.to_csv(csv_path('CODE-SUIs.csv'), mode='a', header=False, index=False)
+    # #### Write CODE-SUIs (:END_ID,:START_ID,:TYPE,CUI) part 1, from label - with existence check
 
-# del newCODE_SUIs - will use this variable again later (though its overwrite)
+    # In[27]:
+
+
+    # This does NOT (yet) address two different owl files asserting two different SUIs as PT with the same CUI,CodeID by choosing the first one in the build process (by comparing only three columns in the existence check) - a Code/CUI would thus have only one PT relationship (to only one SUI) so that is not guaranteed right now (its good practice in query to deduplicate anyway results - because for example even fully addressed two PT relationships could exist between a CODE and SUI if they are asserted on different CUIs) - to assert a vocabulary-specific relationship type as vocabulary-specific preferred term (an ingest parameter perhaps) one would create a PT (if it doesn't have one) and a SAB_PT - that is the solution for an SAB that wants to assert PT on someone else's Code (CCF may want this so there could be CCF_PT Terms on UBERON codes) - note that for SY later, this is not an issue because SY are expected to be multiple and so we use all four columns in the existence check there too but intend to keep that one that way.
+
+    # get the SUIs matches
+    if node_metadata.isna().sum()['node_label']: 
+        newCODE_SUIs = node_metadata.dropna(subset=['node_label']).merge(SUIs, how='left', left_on='node_label', right_on='name')[
+        ['SUI:ID', 'node_id', 'CUI']].dropna().drop_duplicates().reset_index(drop=True)
+    else:
+        newCODE_SUIs = node_metadata.merge(SUIs, how='left', left_on='node_label', right_on='name')[
+        ['SUI:ID', 'node_id', 'CUI']].dropna().drop_duplicates().reset_index(drop=True)
+        
+    newCODE_SUIs.insert(2, ':TYPE', 'PT')
+    newCODE_SUIs.columns = [':END_ID', ':START_ID', ':TYPE', 'CUI']
+
+    # Here we isolate only the rows not already matching in existing files
+    df = newCODE_SUIs.drop_duplicates().merge(CODE_SUIs.drop_duplicates(), on=CODE_SUIs.columns.to_list(), how='left',
+                                              indicator=True)
+    newCODE_SUIs = df.loc[df._merge == 'left_only', df.columns != '_merge']
+    newCODE_SUIs.reset_index(drop=True, inplace=True)
+
+    # write out newCODE_SUIs - comment out during development
+    newCODE_SUIs.to_csv(csv_path('CODE-SUIs.csv'), mode='a', header=False, index=False)
+
+    # del newCODE_SUIs - will use this variable again later (though its overwrite)
 
 
 # #### Write SUIs (SUI:ID,name) part 2, from synonyms - with existence check
 
 # In[28]:
 
+if node_metadata['node_synonyms'].isna().all() :
+    print('All node_synonyms are NaN.')
+else:
+    if node_metadata['node_synonyms'].nunique() == 1:
+        print('only 1 synonym in whole df, check if its legitimate.')
 
-# explode and merge the synonyms
-explode_syns = node_metadata.explode('node_synonyms')[
-    ['node_id', 'node_synonyms', 'CUI']].dropna().drop_duplicates().reset_index(drop=True)
-newSUIs = explode_syns.merge(SUIs, how='left', left_on='node_synonyms', right_on='name')[
-    ['node_id', 'node_synonyms', 'CUI', 'SUI:ID', 'name']]
+    # explode and merge the synonyms
+    explode_syns = node_metadata.explode('node_synonyms')[
+        ['node_id', 'node_synonyms', 'CUI']].dropna().drop_duplicates().reset_index(drop=True)
+    newSUIs = explode_syns.merge(SUIs, how='left', left_on='node_synonyms', right_on='name')[
+        ['node_id', 'node_synonyms', 'CUI', 'SUI:ID', 'name']]
 
-# for Term.name that don't join with node_synonyms update the SUI:ID with base64 of node_synonyms
-newSUIs.loc[(newSUIs['name'] != newSUIs['node_synonyms']), 'SUI:ID'] = \
-    newSUIs[newSUIs['name'] != newSUIs['node_synonyms']]['node_synonyms'].apply(base64it).str[0]
+    # for Term.name that don't join with node_synonyms update the SUI:ID with base64 of node_synonyms
+    newSUIs.loc[(newSUIs['name'] != newSUIs['node_synonyms']), 'SUI:ID'] = \
+        newSUIs[newSUIs['name'] != newSUIs['node_synonyms']]['node_synonyms'].apply(base64it).str[0]
 
-# change field names and isolate non-matched ones (don't exist in SUIs file)
-newSUIs.columns = ['node_id', 'name', 'CUI', 'SUI:ID', 'OLDname']
-newSUIs = newSUIs[newSUIs['OLDname'].isnull()][['node_id', 'name', 'CUI', 'SUI:ID']]
-newSUIs = newSUIs.dropna().drop_duplicates().reset_index(drop=True)
-newSUIs = newSUIs[['SUI:ID', 'name']]
+    # change field names and isolate non-matched ones (don't exist in SUIs file)
+    newSUIs.columns = ['node_id', 'name', 'CUI', 'SUI:ID', 'OLDname']
+    newSUIs = newSUIs[newSUIs['OLDname'].isnull()][['node_id', 'name', 'CUI', 'SUI:ID']]
+    newSUIs = newSUIs.dropna().drop_duplicates().reset_index(drop=True)
+    newSUIs = newSUIs[['SUI:ID', 'name']]
 
-# update the SUIs dataframe to total those that will be in SUIs.csv
-SUIs = pd.concat([SUIs, newSUIs], axis=0).reset_index(drop=True)
+    # update the SUIs dataframe to total those that will be in SUIs.csv
+    SUIs = pd.concat([SUIs, newSUIs], axis=0).reset_index(drop=True)
 
-# write out newSUIs - comment out during development
-newSUIs.to_csv(csv_path('SUIs.csv'), mode='a', header=False, index=False)
+    # write out newSUIs - comment out during development
+    newSUIs.to_csv(csv_path('SUIs.csv'), mode='a', header=False, index=False)
 
-del newSUIs
-# del explode_syns
-
-
-# #### Write CODE-SUIs (:END_ID,:START_ID,:TYPE,CUI) part 2, from synonyms - with existence check
-
-# In[29]:
+    del newSUIs
+    # del explode_syns
 
 
-# get the SUIs matches
-newCODE_SUIs = explode_syns.merge(SUIs, how='left', left_on='node_synonyms', right_on='name')[
-    ['SUI:ID', 'node_id', 'CUI']].dropna().drop_duplicates().reset_index(drop=True)
-newCODE_SUIs.insert(2, ':TYPE', 'SY')
-newCODE_SUIs.columns = [':END_ID', ':START_ID', ':TYPE', 'CUI']
+    # #### Write CODE-SUIs (:END_ID,:START_ID,:TYPE,CUI) part 2, from synonyms - with existence check
 
-# Compare the new and old retaining only new
-df = newCODE_SUIs.drop_duplicates().merge(CODE_SUIs.drop_duplicates(), on=CODE_SUIs.columns.to_list(), how='left',
-                                          indicator=True)
-newCODE_SUIs = df.loc[df._merge == 'left_only', df.columns != '_merge']
-newCODE_SUIs.reset_index(drop=True, inplace=True)
+    # In[29]:
 
-# write out newCODE_SUIs - comment out during development
-newCODE_SUIs.to_csv(csv_path('CODE-SUIs.csv'), mode='a', header=False, index=False)
+    # get the SUIs matches
+    newCODE_SUIs = explode_syns.merge(SUIs, how='left', left_on='node_synonyms', right_on='name')[
+        ['SUI:ID', 'node_id', 'CUI']].dropna().drop_duplicates().reset_index(drop=True)
+    newCODE_SUIs.insert(2, ':TYPE', 'SY')
+    newCODE_SUIs.columns = [':END_ID', ':START_ID', ':TYPE', 'CUI']
 
-del newCODE_SUIs
+    # Compare the new and old retaining only new
+    df = newCODE_SUIs.drop_duplicates().merge(CODE_SUIs.drop_duplicates(), on=CODE_SUIs.columns.to_list(), how='left',
+                                              indicator=True)
+    newCODE_SUIs = df.loc[df._merge == 'left_only', df.columns != '_merge']
+    newCODE_SUIs.reset_index(drop=True, inplace=True)
+
+    # write out newCODE_SUIs - comment out during development
+    newCODE_SUIs.to_csv(csv_path('CODE-SUIs.csv'), mode='a', header=False, index=False)
+
+    del newCODE_SUIs
 
 # #### Write DEFs (ATUI:ID, SAB, DEF) and DEFrel (:END_ID, :START_ID) - with check for any DEFs and existence check
 
