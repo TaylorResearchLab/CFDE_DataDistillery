@@ -660,6 +660,7 @@ node_metadata['cuis'] = node_metadata['cuis'].apply(lambda x: [i for i in x if i
 node_metadata['cuis'] = node_metadata['cuis'].apply(lambda x: [i for row in x for i in row])
 node_metadata['cuis'] = node_metadata['cuis'].apply(lambda x: pd.unique(x)).apply(list)
 
+'''
 # iterate to select one CUI from cuis in row order - we ensure each node_id has its own distinct CUI
 # each node_id is assigned one CUI distinct from all others' CUIs to ensure no self-reference in edgelist
 node_idCUIs = []
@@ -685,6 +686,44 @@ for index, rows in node_metadata.iterrows():
         node_idCUIs.append('')
 
 node_metadata['CUI'] = nmCUI
+node_metadata.to_csv('node_metadata_lists.csv',index=False)
+'''
+
+
+import uuid
+
+node_idCUIs = set() 
+nmCUI = set()
+
+for rows in node_metadata.itertuples():
+    addedone = False
+    INDEX = rows.Index
+
+    for x in rows.cuis:
+        if ((x in node_idCUIs) | (addedone == True)):
+            dummy = 0  
+        else:
+            nmCUI.add((INDEX,x))    # by adding INDEX we can keep track of CUI order by sorting the set of tuples by INDEX at the end
+            node_idCUIs.add((INDEX,x))
+            addedone = True
+
+    if addedone == False:
+        nmCUI.add((INDEX,uuid.uuid4()))
+        node_idCUIs.add((INDEX,uuid.uuid4()))
+        
+    #if INDEX % 100_000 == 0:
+    #    print('Row: '+str(INDEX)+' Elapsed Time: '+str(np.round((time.time()-t0)/60,1)) + ' min')
+
+    
+d = dict(node_idCUIs)
+ordered_cui_dict = {key:d[key] for key in sorted(d.keys())}
+v = list(ordered_cui_dict.values())
+
+nmCUI = v
+node_idCUIs = v
+node_metadata['CUI'] = nmCUI
+node_metadata.to_csv('node_metadata_sets.csv',index=False)
+
 
 # ### Join CUI from node_metadata to each edgelist subject and object
 
