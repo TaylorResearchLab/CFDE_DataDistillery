@@ -3,7 +3,7 @@
 # __Schemas of the various DCCs__
 #### _Link to each DCCs section here_ 
 
-![Kids First](https://github.com/TaylorResearchLab/CFDE_DataDistillery/DCC_schemas#kids-first)
+![KidsFirst](https://github.com/TaylorResearchLab/CFDE_DataDistillery//DCC_schemas#query-to-generate-schema-screenshot)
 
  
 ### **MOTORPAC**
