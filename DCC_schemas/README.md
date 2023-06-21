@@ -1,11 +1,10 @@
 
 
-# __Schemas of the various DCCs__
-#### _Link to each DCCs section here_ 
-
-![KidsFirst](https://github.com/TaylorResearchLab/CFDE_DataDistillery//DCC_schemas#query-to-generate-schema-screenshot)
-
+# Schemas of the various DCCs
+#### Jump to DCC:
  
+![KidsFirst](#query-to-generate-schema-screenshot)
+
 ### **MOTORPAC**
 #### Description of schema
 The MOTORPAC node is located in the center and has edges with....
