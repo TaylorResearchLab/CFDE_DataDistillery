@@ -3,7 +3,7 @@
 # Schemas of the various DCCs
 #### Jump to DCC:
  
-![KidsFirst](#query-to-generate-schema-screenshot)
+[KidsFirst](#query-to-generate-schema-screenshot)
 
 ### **MOTORPAC**
 #### Description of schema
