@@ -19,10 +19,11 @@ return * LIMIT 1
 ----
 
 ## **Kids First**
-
+#### Description of schema
+The MOTORPAC node is located in the center and has edges with....
 <img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/KF_SCHEMA.png" width="900" height="500">
 
-###### Query to generate schema screenshot
+###### Query to generate Kids First schema screenshot
 
 ```
 match (kfpt_code:Code {SAB:'KFPT'})-[:CODE]-(kfpt_cui:Concept)-[:has_phenotype]-(hpo_cui:Concept)-[:CODE]-(hpo_code:Code {SAB:'HPO'}) 
