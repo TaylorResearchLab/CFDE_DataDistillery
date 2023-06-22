@@ -1,10 +1,11 @@
 
 
 # Schemas of the various DCCs
-#### Jump to DCC:
+#### Jump to DCC section:
  
 [KidsFirst](#kids-first)
 
+----
 ## **MOTORPAC**
 #### Description of schema
 The MOTORPAC node is located in the center and has edges with....
@@ -24,7 +25,6 @@ The MOTORPAC node is located in the center and has edges with....
 <img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/KF_SCHEMA.png" width="900" height="500">
 
 ###### Query to generate Kids First schema screenshot
-
 ```
 match (kfpt_code:Code {SAB:'KFPT'})-[:CODE]-(kfpt_cui:Concept)-[:has_phenotype]-(hpo_cui:Concept)-[:CODE]-(hpo_code:Code {SAB:'HPO'}) 
 match (kfpt_cui)-[:belongs_to_cohort]-(cohort_cui:Concept)-[:CODE]-(cohort_code:Code)-[rn]-(cohort_term:Term)
