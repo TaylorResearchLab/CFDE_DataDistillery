@@ -17,6 +17,21 @@ where expbins_code.lowerbound > 0.45
 return * LIMIT 1
 ```
 
+### Return TPM for every tissue above threshold for a given gene
+```
+// start with IDG (pubchem to uniprot)
+match (pubchem_code:Code {SAB:'PUBCHEM'})<-[:CODE]-(pubchem_cui:Concept)-[:bioactivity]-(uniprot_cui:Concept)-[:CODE]->(uniprot_code:Code {SAB:"UNIPROTKB"})
+match (uniprot_cui)-[:gene_product_of]->(hgnc_cui:Concept)-[:CODE]->(hgnc_code:Code {SAB:'HGNC'})-[:SY]->(hgnc_term:Term {name:'OAT1'})
+match (hgnc_cui)-[:expresses]->(gtexexp_cui:Concept)-[:CODE]->(gtexexp_code:Code {SAB:'GTEXEXP'})
+// match the expression bins node and the uberon node
+match (expbins_code:Code {SAB:'EXPBINS'})<-[:CODE]-(expbins_cui:Concept)-[:has_expression]-(gtexexp_cui)-[:expressed_in]->(ub_cui:Concept)-[:CODE]->(ub_code:Code {SAB:'UBERON'})-[:PT]-(ub_term:Term)
+where expbins_code.lowerbound > 0.45
+//with ub_cui
+//match (ub_cui)-[:PREF_TERM]->(ub_term:Term) //  {name:'hypothalamus'}
+return DISTINCT ub_term.name AS TISSUE, expbins_code.lowerbound as TPM ORDER BY TPM DESCENDING
+
+```
+
 ### Count HGNC nodes with TPM threshold
 ```
 match (hgnc_cui:Concept)-[:CODE]-(hgnc_code:Code {SAB:'HGNC'})
