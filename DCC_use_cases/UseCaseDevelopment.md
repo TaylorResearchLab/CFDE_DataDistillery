@@ -61,3 +61,22 @@ return * LIMIT 1
 
 
 
+###### No IDG, gets the nodes/edge that are attached to the UBERON tissue with the MAX() TPM value of the EXPBINS Codes lowerbound
+###### ...must search the pattern and save the MAX() TPM then re-search the pattern
+
+```
+match (hgnc_cui:Concept)-[:CODE]->(hgnc_code:Code {SAB:'HGNC'})-[:SY]->(hgnc_term:Term {name:'OAT1'})
+match (hgnc_cui)-[:expresses]->(gtexexp_cui:Concept)-[:CODE]->(gtexexp_code:Code {SAB:'GTEXEXP'})
+// match the expression bins node and the uberon node
+match (expbins_code:Code {SAB:'EXPBINS'})<-[:CODE]-(expbins_cui:Concept)-[:has_expression]-(gtexexp_cui)-[:expressed_in]->(ub_cui:Concept)-[:CODE]->(ub_code:Code {SAB:'UBERON'})-[:PT]-(ub_term:Term)
+with max(expbins_code.lowerbound) as M
+match (hgnc_cui:Concept)-[:CODE]->(hgnc_code:Code {SAB:'HGNC'})-[:SY]->(hgnc_term:Term {name:'OAT1'})
+match (hgnc_cui)-[:expresses]->(gtexexp_cui:Concept)-[:CODE]->(gtexexp_code:Code {SAB:'GTEXEXP'})
+match (expbins_code:Code {SAB:'EXPBINS'})<-[:CODE]-(expbins_cui:Concept)-[:has_expression]-(gtexexp_cui)-[:expressed_in]->(ub_cui:Concept)-[:CODE]->(ub_code:Code {SAB:'UBERON'})-[:PT]-(ub_term:Term)
+where expbins_code.lowerbound = M
+match (hgnc_cui)-[pubchem_rel:positively_regulated_by {SAB:'LINCS'}]-(pubchem_cui2:Concept)-[:CODE]-(pubchem_code2:Code {SAB:'PUBCHEM'}) //-[:PT]-(pubchem_2_term:Term)
+return * 
+//return distinct ub_term.name, expbins_code.lowerbound as TPM order by TPM DESC
+```
+
+
