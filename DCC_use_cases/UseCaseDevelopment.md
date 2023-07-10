@@ -71,4 +71,25 @@ match (hgnc_cui)-[pubchem_rel:positively_regulated_by {SAB:'LINCS'}]-(pubchem_cu
 return * ORDER BY expbins_code.lowerbound DESC LIMIT 1
 ```
 
+### Return gene TPM for the 5 CYP450 enzymes
+```
+WITH ['CYP1A2', 'CYP2C9', 'CYP2D6', 'CYP3A4',  'CYP3A5'] AS GENE_LIST
+MATCH (gtexexp_code:Code {SAB:'GTEXEXP'})<-[:CODE]-(gtexexp_cui:Concept)<-[:expresses]-(hgnc_cui:Concept)-[:CODE]->(hgnc_code:Code {SAB:'HGNC'})-[]->(hgnc_term:Term)
+WHERE hgnc_term.name IN GENE_LIST
+MATCH (expbins_code:Code {SAB:'EXPBINS'})<-[:CODE]-(expbins_cui:Concept)-[:has_expression]-(gtexexp_cui)-[:expressed_in]->(ub_cui:Concept)-[:CODE]-(ub_code:Code {SAB:'UBERON'})
+WITH REDUCE(m='',word in split(gtexexp_code.CODE,'-')[2..] | m+word+' ') AS tissueStr, expbins_code.lowerbound AS TPM_lb,expbins_code.upperbound AS TPM_ub, hgnc_term.name AS Gene
+RETURN DISTINCT Gene, tissueStr, TPM_lb,TPM_ub ORDER BY TPM_lb DESC LIMIT 5
+```
 
+### Return PUBCHEM IDs as well
+```
+WITH ['CYP1A2', 'CYP2C9', 'CYP2D6', 'CYP3A4',  'CYP3A5'] AS GENE_LIST
+MATCH (hgnc_cui:Concept)-[:CODE]->(hgnc_code:Code {SAB:'HGNC'})-[]->(hgnc_term:Term)
+WHERE hgnc_term.name IN GENE_LIST
+MATCH (hgnc_cui)-[:expresses]->(gtexexp_cui:Concept)-[:CODE]->(gtexexp_code:Code {SAB:'GTEXEXP'})
+MATCH (expbins_code:Code {SAB:'EXPBINS'})<-[:CODE]-(expbins_cui:Concept)-[:has_expression]-(gtexexp_cui)-[:expressed_in]->(ub_cui:Concept)-[:CODE]-(ub_code:Code {SAB:'UBERON'})
+WITH REDUCE(mergedString='',word in split(gtexexp_code.CODE,'-')[2..] | mergedString+word+' ') AS tissueStr, expbins_code.lowerbound AS TPM_lb, expbins_code.upperbound AS TPM_ub,
+hgnc_term.name AS Gene, hgnc_cui
+MATCH (hgnc_cui)-[:positively_regulated_by {SAB:'LINCS'}]-(pubchem_cui:Concept)-[:CODE]-(pubchem_code:Code {SAB:'PUBCHEM'})
+RETURN DISTINCT Gene, tissueStr, COLLECT(pubchem_code.CodeID) AS PUBCHEM_IDs LIMIT 5
+```
