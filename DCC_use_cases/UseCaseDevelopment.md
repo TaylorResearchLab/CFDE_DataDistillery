@@ -93,3 +93,15 @@ hgnc_term.name AS Gene, hgnc_cui
 MATCH (hgnc_cui)-[:positively_regulated_by {SAB:'LINCS'}]-(pubchem_cui:Concept)-[:CODE]-(pubchem_code:Code {SAB:'PUBCHEM'})
 RETURN DISTINCT Gene, tissueStr, COLLECT(pubchem_code.CodeID) AS PUBCHEM_IDs LIMIT 5
 ```
+
+-- add tissue specification
+
+
+#### Show how many genes are effected by these compounds in the liver vs in the kidney vs in the heart
+
+Compounds that inhibit CYP450 enzymes we want to check
+
+
+
+
+
