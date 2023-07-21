@@ -10,7 +10,7 @@
 ## **MOTORPAC**
 #### Description of schema
 The MOTORPAC node is located in the center and has edges with....
-<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/MOTORPAC_SCHEMA.png" width="900" height="500">
+<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/MOTORPAC_SCHEMA_2.png" width="900" height="500">
 
 ###### Query to generate MOTORPAC schema screenshot
 ```
