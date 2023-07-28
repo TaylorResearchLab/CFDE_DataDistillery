@@ -1,6 +1,6 @@
 
 
-# Use Case #4 Development queries 
+# Use Case #4 LINCS Use case
 
 <u>For a specific drug transporter or drug processing enzyme, find the tissue where these transporters and enzymes are highly expressed (GTEx), and the drugs that may induce or suppress the expression of these genes (LINCS).</u>
 
