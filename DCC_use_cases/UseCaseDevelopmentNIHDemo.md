@@ -96,10 +96,14 @@ RETURN DISTINCT Gene, tissueStr, COLLECT(pubchem_code.CodeID) AS PUBCHEM_IDs LIM
 
 -- add tissue specification
 
-
 #### Show how many genes are effected by these compounds in the liver vs in the kidney vs in the heart
 
 Compounds that inhibit CYP450 enzymes we want to check
+
+
+# Tahas queries
+
+
 
 
 
