@@ -102,7 +102,7 @@ RETURN DISTINCT Gene, tissueStr, COLLECT(pubchem_code.CodeID) AS PUBCHEM_IDs LIM
 Compounds that inhibit CYP450 enzymes we want to check
 
 
-# Tahas queries
+# Tahas Use Cases
 
 
 
