@@ -1,7 +1,7 @@
 
 
 # Use Case #4 LINCS Use case
-
+[Powerpoint Slides](https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/DCC_use_cases/NIH_demoJuly2023.pdf)
 <u>For a specific drug transporter or drug processing enzyme, find the tissue where these transporters and enzymes are highly expressed (GTEx), and the drugs that may induce or suppress the expression of these genes (LINCS).</u>
 
 ### Starting with IDG
