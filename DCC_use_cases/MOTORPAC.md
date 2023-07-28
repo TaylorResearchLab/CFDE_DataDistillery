@@ -2,12 +2,6 @@
 [Google Doc to MOTORPAC use cases](https://docs.google.com/spreadsheets/d/1Z1rStygHvT3zBQIDmD61No4U3YogkpglpDxJlD4tIfk/edit#gid=0)
 
 
-<a href="http://example.com/" target="_blank">Hello, world!</a>
-
-
-<a href="https://docs.google.com/spreadsheets/d/1Z1rStygHvT3zBQIDmD61No4U3YogkpglpDxJlD4tIfk/edit#gid=0" target="_blank">Google Doc to MOTORPAC use cases</a>
-
-
 # #3
 
 
