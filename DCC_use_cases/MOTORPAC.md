@@ -13,7 +13,16 @@ code
 
 # 3) Find KF (or other) SNPs or mutations that lead to loss or gain of glycosylation site from GlyGen data, and how many of those genes are expressed in the GTEx liver dataset AND in the MoTrPAC liver data are a Rat-human expression match in liver AND are output RNA-protein correlate in liver
 ```
-code
+// put Glycoenzymes.csv in the import folder of your neo4j db
+LOAD CSV FROM 'file:///Glycoenzymes.csv' AS gylco_genes
+WITH COLLECT(gylco_genes) AS g
+RETURN g
+
+MATCH (hgnc_cui:Concept)-[:CODE]-(hgnc_code:Code {SAB:'HGNC'})-[:ACR]-(hgnc_term:Term)
+MATCH (hgnc_cui)-[:expresses]->(gtex_cui:Concept)-[:CODE]-(gtex_code:Code {SAB:'GTEXEXP'})
+MATCH (gtex_cui)-[:expressed_in]-(ub_cui:Concept)-[:CODE]-(ub_code:Code {SAB:'UBERON'})-[:PT]-(ub_term:Term)
+MATCH (hgnc_cui)-[:gene_has_variants]-(kf_cui:Concept)-[:CODE]-(kf_code:Code {SAB:'KFGENEBIN'})
+RETURN * LIMIT 1
 ```
 
 # 4) For a specific drug processing enzyme, find the tissue and assays where these enzymes are highly expressed in the MoTrPAC young adult rats endurance training exercise data, and the related drug profiles in LINCS data.
