@@ -1,6 +1,22 @@
 # MOTORPAC Use Case
 [Google Doc to MOTORPAC use cases](https://docs.google.com/spreadsheets/d/1Z1rStygHvT3zBQIDmD61No4U3YogkpglpDxJlD4tIfk/edit#gid=0)
 
+
+## Important note about MOTORPAC schema:
+```
+LOAD CSV FROM 'file:///Glycoenzymes.csv' AS glyco_genes
+WITH REDUCE(s = [], list IN collect(glyco_genes) | s + list) AS glyco_list
+MATCH  (hgnc_term:Term)-[:ACR]-(hgnc_code:Code {SAB:'HGNC'})-[:CODE]-(hgnc_cui)-[:gene_has_variants]-(kf_cui:Concept)-[:CODE]-(kf_code:Code {SAB:'KFGENEBIN'}) WHERE hgnc_term.name IN glyco_list
+MATCH (mp_code:Code {SAB:'MOTORPAC'})<-[:CODE]-(mp_cui:Concept)-[:associated_with {SAB:'MOTORPAC'}]-(ensRat_cui:Concept)-[:CODE]->(ensRat_code:Code {SAB:'ENSEMBL'})
+MATCH (ensRat_cui)-[:has_human_ortholog]-(ensHum_cui:Concept)-[:CODE]-(ensHum_code:Code {SAB:'ENSEMBL'})-[:GENCODE_PT]-(ensHum_term:Term)
+MATCH (ensHum_cui)-[:RO]-(hgnc_cui:Concept)
+RETURN DISTINCT hgnc_term.name AS glycoGene, mp_code.CODE, kf_code.value AS variantCnt
+```
+
+
+
+
+
 # 1) MoTrPAC Genes affected by exercise, are expressed in matched tissues in humans in GTEx, that are either matches or inverse matches of a perturbation signal in LINCS = compounds or perturbations that might promote or interfere with exercise benefit b) (FUTURE) Genes that are circadian in rat, are a signature match to perturbation in LINCS = compounds that might affect circadian rhythms/behaviors 
 ```
 code
@@ -14,9 +30,9 @@ code
 # 3) Find KF (or other) SNPs or mutations that lead to loss or gain of glycosylation site from GlyGen data, and how many of those genes are expressed in the GTEx liver dataset AND in the MoTrPAC liver data are a Rat-human expression match in liver AND are output RNA-protein correlate in liver
 ```
 // put Glycoenzymes.csv in the import folder of your neo4j db
+// then use collect and reduce to flatten list of genes
 LOAD CSV FROM 'file:///Glycoenzymes.csv' AS gylco_genes
-WITH COLLECT(gylco_genes) AS g
-RETURN g
+
 
 MATCH (hgnc_cui:Concept)-[:CODE]-(hgnc_code:Code {SAB:'HGNC'})-[:ACR]-(hgnc_term:Term)
 MATCH (hgnc_cui)-[:expresses]->(gtex_cui:Concept)-[:CODE]-(gtex_code:Code {SAB:'GTEXEXP'})
