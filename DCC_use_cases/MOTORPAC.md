@@ -2,14 +2,19 @@
 [Google Doc to MOTORPAC use cases](https://docs.google.com/spreadsheets/d/1Z1rStygHvT3zBQIDmD61No4U3YogkpglpDxJlD4tIfk/edit#gid=0)
 
 
-## Important note about MOTORPAC schema:
+## Important note about MOTORPAC and KF schema:
+The KF `value` parameter represents the number of (HIGH impact and de Novo) variants associated with each gene. The MOTORPAC nodes are represented by tissue-gene-gender Codes which means you can get the same KF gene showing up multiple times for unique MOTORPAC connections like in the image below.
+
+
+[a]()
+
+Query used:
 ```
 LOAD CSV FROM 'file:///Glycoenzymes.csv' AS glyco_genes
 WITH REDUCE(s = [], list IN collect(glyco_genes) | s + list) AS glyco_list
 MATCH  (hgnc_term:Term)-[:ACR]-(hgnc_code:Code {SAB:'HGNC'})-[:CODE]-(hgnc_cui)-[:gene_has_variants]-(kf_cui:Concept)-[:CODE]-(kf_code:Code {SAB:'KFGENEBIN'}) WHERE hgnc_term.name IN glyco_list
 MATCH (mp_code:Code {SAB:'MOTORPAC'})<-[:CODE]-(mp_cui:Concept)-[:associated_with {SAB:'MOTORPAC'}]-(ensRat_cui:Concept)-[:CODE]->(ensRat_code:Code {SAB:'ENSEMBL'})
-MATCH (ensRat_cui)-[:has_human_ortholog]-(ensHum_cui:Concept)-[:CODE]-(ensHum_code:Code {SAB:'ENSEMBL'})-[:GENCODE_PT]-(ensHum_term:Term)
-MATCH (ensHum_cui)-[:RO]-(hgnc_cui:Concept)
+MATCH (ensRat_cui)-[:has_human_ortholog]-(ensHum_cui:Concept)-[:CODE]-(ensHum_code:Code {SAB:'ENSEMBL'})-[:GENCODE_PT]-(ensHum_term:Term) MATCH (ensHum_cui)-[:RO]-(hgnc_cui:Concept)
 RETURN DISTINCT hgnc_term.name AS glycoGene, mp_code.CODE, kf_code.value AS variantCnt
 ```
 
