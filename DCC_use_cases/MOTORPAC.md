@@ -3,7 +3,7 @@
 
 **NOTE:** The KF `value` parameter represents the number of (HIGH impact and de Novo) variants associated with each gene. The MOTORPAC nodes are represented by tissue-gene-gender Codes which means you can get the same KF gene showing up multiple times for unique MOTORPAC connections like in the image below.
 
-<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/KF_MOTORPAC_screenshot.png" width="800" height="400">
+<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/KF_MOTORPAC_screenshot" width="800" height="400">
 
 Query used:
 ```
