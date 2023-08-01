@@ -39,7 +39,7 @@ MATCH (mp_code:Code {SAB:'MOTORPAC'})<-[:CODE]-(mp_cui:Concept)-[:associated_wit
 MATCH (ensRat_cui)-[:has_human_ortholog]-(ensHum_cui:Concept)-[:CODE]-(ensHum_code:Code {SAB:'ENSEMBL'})-[:GENCODE_PT]-(ensHum_term:Term)
 WHERE mp_code.CODE CONTAINS 'liver'
 MATCH (ensHum_cui)-[:RO]-(hgnc_cui:Concept)
-RETURN DISTINCT hgnc_term.name AS glycoGene, mp_code.CODE, kf_code.value AS variantCnt
+RETURN DISTINCT hgnc_term.name AS glycoGene, mp_code.CODE AS MOTORPAC_code, kf_code.value AS variantCnt, mp_code.value AS p_value
 ```
 
 ### 4) For a specific drug processing enzyme, find the tissue and assays where these enzymes are highly expressed in the MoTrPAC young adult rats endurance training exercise data, and the related drug profiles in LINCS data.
