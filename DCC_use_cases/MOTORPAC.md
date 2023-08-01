@@ -55,9 +55,7 @@ MATCH (hgnc_cui)-[:positively_regulated_by {SAB:'LINCS'}]-(pubchem_cui:Concept)-
 MATCH (gtex_cui)-[:expressed_in]-(ub_cui:Concept)-[:CODE]-(ub_code:Code {SAB:'UBERON'})-[:PT]-(ub_term:Term)
 WHERE ub_term.name CONTAINS 'liver'
 MATCH (mp_cui)-[:gender {SAB:'MOTORPAC'}]->(pato_cui:Concept)-[:PREF_TERM]-(pato_term:Term)
-//MATCH (mp_cui)-[:located_in {SAB:'MOTORPAC'}]-(ub_cui:Concept)//-[:CODE]-(ub_code {SAB:'UBERON'})-[:SY]-(ub_term:Term)
-RETURN DISTINCT hgnc_term.name AS gene, pubchem_term.name AS LINCS_edge, ub_term.name AS UBERON_tissue, mp_code.CODE AS MOTORPAC_code
-//RETURN * LIMIT 1
+RETURN DISTINCT hgnc_term.name AS gene, mp_code.CODE AS MOTORPAC_code, ub_term.name AS UBERON_tissue, mp_code.value AS p_value, collect(pubchem_term.name) AS pubchem_names
 ```
 
 
