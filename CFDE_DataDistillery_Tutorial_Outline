@@ -1,1 +1,40 @@
+# What do you need to know before hand
 
+- [ ]  Users need to have some level of understanding of Neo4j
+- [ ]  Users need to have some level of understanding of Cypher query language
+- [ ]  Users need to have some level of understanding of gene ontologies and their structure
+- [ ]  Users need to have some level of understanding of HuBMAP UMLS
+
+Next, to shorten the length of the tutorial we have several abbreviations that we will continuously use to refer to different subjects. We will list some here but we also have a data dictionary at “blank” that will list out all of the used abbreviations so you can refer to these if you are ever confused.  
+
+# What can you do with the queries
+
+Queries into a neo4j database operate on Cypher, parallel to how relational databases use SQL.
+
+So you can use queries to ask complex questions that link data across multiple ontologies to derive all new answers to questions that you were not able to ask before. And the best part is that not only are the queries simple to construct, they often do not take very long to run like it would in a more traditional relational database. We will give you a break down of the query structure and some example queries in the following sections. 
+
+# The schema of the database
+
+The schema structures data based on the idea of concept nodes. 
+
+A “**CONCEPT”** is an ***entity*** in the UBKG. A **concept** is represented with a ***code*** in a source ontology and a ***CUI(*Concept Unique Identifier)** in the overall UBKG.
+
+**Concept** nodes are those unifying principles that can support connections to multiple terminology systems. 
+
+A “**CODE”** is the identifier for a ***concept*** in a ***vocabulary*** or ***ontology*** in the UMLS. A code is unique to the ontology. For example, both the SNOMED_CT and the NCI Thesaurus vocabularies have different “**CODES**” to represent the ***concept*** of “kidney”; however, because these codes are ***cross-referenced*** to the same UMLS concept, the codes share a **CUI**(**Concept Unique Identifier)**.
+
+A “**CUI”** is a unique identifier for a ***concept*** in the UBKG. A **CUI** can be cross-referenced by ***codes*** from many ***ontologies***, allowing for associations between entities in different ontologies.
+
+For example, the **CUI** for the concept of *methanol* in UMLS is cross-referenced by codes in a number of ontologies and vocabularies, such as SNOMED_CT and NCI. The use of the CUI allows for questions such as “How many different ways do all of the ontologies in the UBKG refer to methanol?” An example of a CUI being used can be seen in the picture below. The following illustration shows, a knowledge graph can reveal that terms from different ontologies include “methanol”, “Methyl Alcohol”, and “METHYL ALCOHOL”.
+
+INSERT PHOTO FROM https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/user_guide/GLOSSARY.md
+
+# Break Down Query construction
+
+In the example shown below, the central orange concept ID represents "acyclovir" which can have several IDs, found in databases such as ChEMBL, CHEBI, DrugBank, PubChem etc. Here, we show the code node (CHEBI ID, purple), for acyclovir. Here, a "preferred term" (brown) reports the preferred name for the drug. A similar structure is used for items such as gene names, ontologies, and other systems, as well as experimental data.
+
+# 1st simple use case query example
+
+The first tutorial has plenty of examples to pull from including a GTEX query 
+
+# Another use case query example
