@@ -39,6 +39,46 @@ The MOTORPAC node is located in the center and has edges with....
 match (kfpt_code:Code {SAB:'KFPT'})-[:CODE]-(kfpt_cui:Concept)-[:has_phenotype]-(hpo_cui:Concept)-[:CODE]-(hpo_code:Code {SAB:'HPO'}) 
 match (kfpt_cui)-[:belongs_to_cohort]-(cohort_cui:Concept)-[:CODE]-(cohort_code:Code)-[rn]-(cohort_term:Term)
 match (cohort_cui)-[:belongs_to_cohort]-(varbin_cui:Concept)-[:CODE]-(varbin_code:Code {SAB:'KFVARBIN'})
-match (varbin_cui)-[:location_has_variants]-(chlo_cui:Concept)-[:CODE]-(chlo_code:Code {SAB:'CHLO'})
+//match (varbin_cui)-[:location_has_variants]-(chlo_cui:Concept)-[:CODE]-(chlo_code:Code {SAB:'HSCLO'})
 return * LIMIT 1
 ```
+
+## GTEx
+###### GTEXEXP
+```
+match (gtex_exp:Concept)-[r0]-(gtex_exp_code:Code) where gtex_exp_code.SAB = 'GTEXEXP' 
+match (gtex_exp)-[r1]-(hgnc_concept:Concept)-[r2]-(hgnc_code:Code) where hgnc_code.SAB = 'HGNC'
+match (gtex_exp)-[r3]-(ub_concept:Concept)-[r4]-(ub_code:Code) where ub_code.SAB = 'UBERON'
+match (gtex_exp)-[r5]-(exp_concept:Concept)-[r6]-(exp_code:Code) where exp_code.SAB = 'EXPBINS' 
+return * limit 1
+```
+###### GTEXEQTL
+```
+match (gtex_exp:Concept)-[r0]-(gtex_exp_code:Code) where gtex_exp_code.SAB = 'GTEXEQTL' 
+match (gtex_exp)-[r1:located_in]-(hgnc_concept:Concept)-[r2]-(hgnc_code:Code) where hgnc_code.SAB = 'HGNC'
+match (gtex_exp)-[r3:located_in]-(ub_concept:Concept)-[r4]-(ub_code:Code) where ub_code.SAB = 'UBERON'
+match (gtex_exp)-[r5:p_value]-(exp_concept:Concept)-[r6]-(exp_code:Code) where exp_code.SAB = 'PVALUEBINS'  
+//match  (gtex_exp)-[r7]-(hsclo_concept:Concept)-[r8]-(hsclo_code:Code) where hsclo_code.SAB = 'HSCLO'  
+return * limit 1
+```
+
+
+## ERCC
+###### ERCCREG (Regulary Elements)
+```
+match (eca_cui:Concept)-[:CODE]-(eca_code:Code {SAB:'ENCODE.CCRE.ACTIVITY' })
+match (eca_cui)-[:regulates {SAB:'ERCCREG'}]-(ens_cui:Concept)-[:CODE]-(ens_code:Code {SAB:'ENSEMBL'}) 
+match (eca_cui)-[:part_of{SAB:'ERCCREG'}]-(ub_cui:Concept)-[:CODE]-(ub_code:Code {SAB:'UBERON'}) 
+match (eca_cui)-[:part_of{SAB:'ERCCREG'}]-(ec_cui:Concept)-[:CODE]-(ec_code:Code {SAB:'ENCODE.CCRE'}) 
+match (eca_cui)-[:isa{SAB:'ERCCREG'}]-(ech_cui:Concept)-[:CODE]-(ech_code:Code {SAB:'ENCODE.CCRE.H3K4ME3'}) 
+match (eca_cui)-[:isa{SAB:'ERCCREG'}]-(ech2_cui:Concept)-[:CODE]-(ech2_code:Code {SAB:'ENCODE.CCRE.H3K27AC'}) 
+match (eca_cui)-[:isa{SAB:'ERCCREG'}]->(ecc_cui:Concept)-[:CODE]-(ecc_code:Code {SAB:'ENCODE.CCRE.CTCF'}) 
+match (ec_cui)-[:located_in{SAB:'ERCCREG'}]-(car_cui:Concept)-[:CODE]-(car_code:Code {SAB:'CLINGEN.ALLELE.REGISTRY'}) 
+match (car_cui)-[:part_of {SAB:'ERCCREG'}]-(eqtl_cui:Concept)-[:CODE]-(eqtl_code:Code {SAB:'GTEXEQTL'})
+match (eqtl_cui)-[{SAB:'ERCCREG'}]-(ens2_cui:Concept)-[:CODE]-(ens2_code:Code {SAB:'ENSEMBL'})
+return * limit 1
+```
+
+
+
+
