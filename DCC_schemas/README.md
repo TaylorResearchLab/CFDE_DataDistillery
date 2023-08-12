@@ -105,8 +105,9 @@ return * limit 1
 ###### IDGD (compound to disease)
 
 ```
-match (pubchem_code:Code {SAB:'PUBCHEM'})-[:CODE]-(pubchem_cui:Concept)-[:indication {SAB:'IDGD'}]-(snomed_cui:Concept)-[:CODE]-(snomed_code:Code {SAB:"SNOMEDCT_US"})-[:PT]-(t2:Term)
+match (pubchem_code:Code {SAB:'PUBCHEM'})-[:CODE]-(pubchem_cui:Concept)-[:indication {SAB:'IDGD'}]-(snomed_cui:Concept)-[:CODE]-(snomed_code:Code {SAB:"SNOMEDCT_US"})
 match (pubchem_cui)-[:PREF_TERM]-(t:Term)
+match (snomed_cui)-[:PREF_TERM]-(t2:Term)
 return * limit 1
 ```
 
