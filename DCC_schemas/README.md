@@ -37,6 +37,13 @@ match (kfpt_cui)-[:belongs_to_cohort]-(cohort_cui:Concept)-[:CODE]-(cohort_code:
 match (cohort_cui)-[:belongs_to_cohort]-(varbin_cui:Concept)-[:CODE]-(varbin_code:Code {SAB:'KFVARBIN'})
 //match (varbin_cui)-[:location_has_variants]-(chlo_cui:Concept)-[:CODE]-(chlo_code:Code {SAB:'HSCLO'})
 return * LIMIT 1
+
+Data dictionary query:
+match (kfpt_code:Code {SAB:'KFPT'})-[:CODE]-(kfpt_cui:Concept)-[:has_phenotype]-(hpo_cui:Concept)-[:CODE]-(hpo_code:Code {SAB:'HPO'}) 
+match (kfpt_cui)-[:belongs_to_cohort]-(cohort_cui:Concept)-[:CODE]-(cohort_code:Code)-[rn]-(cohort_term:Term)
+match (cohort_cui)-[:belongs_to_cohort]-(varbin_cui:Concept)-[:CODE]-(varbin_code:Code {SAB:'KFVARBIN'})
+//match (varbin_cui)-[:location_has_variants]-(chlo_cui:Concept)-[:CODE]-(chlo_code:Code {SAB:'HSCLO'})
+return * LIMIT 1
 ```
 
 ## GTEx
