@@ -1,4 +1,4 @@
-# What do you need to know before hand
+33# What do you need to know before hand
 
 - [ ]  Users need to have some level of understanding of Neo4j. Check this [link](https://graphacademy.neo4j.com/courses/neo4j-fundamentals/) for a tutorial if you don't
 - [ ]  Users need to have some level of understanding of Cypher query languag. Refer to this [link](https://graphacademy.neo4j.com/courses/cypher-fundamentals/) if you do not
@@ -27,7 +27,9 @@ A “**CUI”** is a unique identifier for a ***concept*** in the UBKG. A **CU
 
 For example, the **CUI** for the concept of *methanol* in UMLS is cross-referenced by codes in a number of ontologies and vocabularies, such as SNOMED_CT and NCI. The use of the CUI allows for questions such as “How many different ways do all of the ontologies in the UBKG refer to methanol?” An example of a CUI being used can be seen in the picture below. The following illustration shows, a knowledge graph can reveal that terms from different ontologies include “methanol”, “Methyl Alcohol”, and “METHYL ALCOHOL”.
 
-INSERT PHOTO FROM https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/user_guide/GLOSSARY.md
+
+![202924294-9b232793-ae36-4fdd-8363-44a2ddedbe3e-2](https://github.com/TaylorResearchLab/CFDE_DataDistillery/assets/16074732/ccc71e6b-33d3-416d-904f-4a72cd83aca8)
+
 
 An “**ENTITY”** represents a member of an ***ontology***. **Entities** associate with other entities in an ontology via ***relationships***.
 
@@ -51,7 +53,8 @@ RETURN *
 LIMIT 5
 ```
 
-INSERT PHOTO OF THIS QUERY Results
+![hgnc](https://github.com/TaylorResearchLab/CFDE_DataDistillery/assets/16074732/ede0fe15-478f-4fd6-8f26-3c9ab0398e53)
+
 
 In this example we are returning all HGNC nodes that are connected to GO nodes. Again we use “**code:Code**” to select all nodes and give it the **SAB** **HGNC**. We set the relationship to “:**CODE**” so we can get all the nodes that have a :CODE relationship. Then we set the relationship to “**[r]**” (this is how we select all relationships of a node). We create a second concept named “**concept2**” (now we are getting all concept to concept2 relationships) and finally we make a “**:CODE**” relationship to select all code relationships attached to **concept2**. Lastly we make **code2** and give it the **SAB** of “**GO**” and that is how we set our query up to match all **HGNC** nodes and to find all concepts from **HGNC** that match a concept from **GO**. The final thing we do is return * and put a limit of 1 so we can analyze one output and see how these connections look in a neo4j graph output.
 
@@ -60,8 +63,9 @@ MATCH (code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[r]-(concept2:Concept)-
 RETURN *
 LIMIT 1
 ```
+![hgnc-sab](https://github.com/TaylorResearchLab/CFDE_DataDistillery/assets/16074732/9de6e4a4-31d3-4b1c-8520-600d8124216f)
 
-INSERT PICTURE OF QUERY RESULTS
+
 
 In the next example we are using all of the skills that we have seen so far to give us more of a tabular output from our query. We start the same way we did before with selecting all code nodes that have a **SAB** of **HGNC**, and then selecting all **CODE** relationships from those nodes to all concept nodes. We then get all relationships from those concept nodes and connect them to a second group of concept nodes named concept2. We then take all nodes with a **CODE** relationship and select all :**Code** nodes and name that “**code2**”. This is very similar to the example that we did above. The big difference this time is that instead of returning everything, we now return “********************DISTINCT”******************** results only. And we now get to see how we use the variable naming that we have been attaching to our code nodes and concept nodes in previous examples. We used code.SAB (which is equivalent to the “(code:Code {SAB:'HGNC'})” portion of this query) and we give it a new name of “hence_start_code” by using the “**AS**” keyword. We then set r (which is the relationships of concept nodes to concept2 nodes) and rename that as edge using the “**AS**” keyword. Lastly we use code2.SAB and give these nodes the name “SAB_end_code” with the “**AS**” keyword and set a limit of 10 results to be outputted. Below we show what the results of this query look like. 
 
@@ -71,7 +75,8 @@ RETURN DISTINCT code.SAB AS hgnc_start_code, type(r) AS edge, code2.SAB AS SAB_e
 LIMIT 10
 ```
 
-INSERT PICTURE OF QUERY RESULTS 
+<img width="1129" alt="Screenshot 2023-08-21 at 12 14 13 PM" src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/assets/16074732/28a945c0-5935-4862-8729-96b05b3da9fb">
+
 
 # 1st simple use case query example
 
