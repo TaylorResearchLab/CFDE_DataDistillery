@@ -83,6 +83,7 @@ return * limit 1
 ```
 
 ###### ERCCRBP (exRNA RBP)     missing ENCODE.RBS.HepG2 and ENCODE.RBS.HepG2.K562 CUIs
+```
 match (t:Term)-[q]-(eR150_cui:Concept)-[:CODE]-(er150_code:Code {SAB:'ENCODE.RBS.150.NO.OVERLAP' })
 match (eR150_cui)-[:overlaps {SAB:"ERCCRBP"}]-(ens_cui:Concept)-[:CODE]-(ens_code:Code {SAB:'ENSEMBL'}) 
 //match (eR150_cui)-[r:is_subsequence_of {SAB:"ERCCRBP"}]-(erh_cui:Concept)-[:CODE]-(erh_code:Code {SAB:'ENCODE.RBS.HepG2'}) 
@@ -92,7 +93,7 @@ match (eR150_cui)-[:correlated_in {SAB:"ERCCRBP"}]-(ub_cui:Concept)-[:CODE]-(ub_
 match (ub_cui)-[:predicted_in {SAB:"ERCCRBP"}]-(uni_cui:Concept)-[:CODE]-(uni_code:Code {SAB:'UNIPROTKB'}) // edge could also be 'not_predicted_in'
 match (uni_code2:Code {SAB:'UNIPROTKB'})-[:CODE]-(uni_cui2:Concept)-[:molecularly_interacts_with {SAB:"ERCCRBP"}]-(erK2_cui:Concept)-[:CODE]-(erK2_code:Code {SAB:'ENCODE.RBS.K562'})
 return * limit 1
-
+```
 
 
 ## IDG
@@ -116,16 +117,13 @@ return * limit 1
 
 ## GLYGEN
 
-
-
 ## LINCS
-
-
 
 ## SPARC
 
-
 ## METABOLICS WORKBENCH
+
+## HUBMAP
 
 
 
