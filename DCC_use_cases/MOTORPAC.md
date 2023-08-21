@@ -19,12 +19,58 @@ MATCH (ensRat_cui)-[:has_human_ortholog]-(ensHum_cui:Concept)-[:CODE]-(ensHum_co
 
 ### 1) MoTrPAC Genes affected by exercise, are expressed in matched tissues in humans in GTEx, that are either matches or inverse matches of a perturbation signal in LINCS = compounds or perturbations that might promote or interfere with exercise benefit b) (FUTURE) Genes that are circadian in rat, are a signature match to perturbation in LINCS = compounds that might affect circadian rhythms/behaviors 
 ```
-code
+//Graphical representation showing the first line of results as a graph
+match (motrpac_code:Code {SAB:"MOTRPAC"})<-[:CODE]-(motrpac_concept:Concept)-[r1:associated_with]->(rat_gene_concept:Concept)-[r2:has_human_ortholog]->(hgnc_concept:Concept)<-[r3 {SAB:"LINCS"}]-(perturbagen_concept:Concept),
+(motrpac_concept:Concept)-[r4:located_in]->(tissue_concept_1:Concept)-[r5:part_of]-(tissue_concept_2:Concept)-[r6:expresses {SAB:"GTEXEXP"}]->(gtex_concept:Concept)-[r7:expressed_in {SAB:"GTEXEXP"}]-(hgnc_concept:Concept),
+(gtex_concept:Concept)-[r8:has_expression {SAB:"GTEXEXP"}]->(expr_concept:Concept)-[:CODE]->(expr_code:Code),
+(hgnc_concept:Concept)-[:PREF_TERM]->(hgnc_term:Term),
+(perturbagen_concept:Concept)-[:PREF_TERM]->(perturbagen_term:Term),
+(tissue_concept_1:Concept)-[:PREF_TERM]->(tissue_term_1:Term),
+(tissue_concept_2:Concept)-[:PREF_TERM]->(tissue_term_2:Term),
+(rat_gene_concept:Concept)-[:CODE]->(rat_gene_code:Code)
+return * limit 1
+
+//Returning 20 line of results in tabular format
+match (motrpac_code:Code {SAB:"MOTRPAC"})<-[:CODE]-(motrpac_concept:Concept)-[r1:associated_with]->(rat_gene_concept:Concept)-[r2:has_human_ortholog]->(hgnc_concept:Concept)<-[r3 {SAB:"LINCS"}]-(perturbagen_concept:Concept),
+(motrpac_concept:Concept)-[r4:located_in]->(tissue_concept_1:Concept)-[r5:part_of]-(tissue_concept_2:Concept)-[r6:expresses {SAB:"GTEXEXP"}]->(gtex_concept:Concept)-[r7:expressed_in {SAB:"GTEXEXP"}]-(hgnc_concept:Concept),
+(gtex_concept:Concept)-[r8:has_expression {SAB:"GTEXEXP"}]->(expr_concept:Concept)-[:CODE]->(expr_code:Code),
+(hgnc_concept:Concept)-[:PREF_TERM]->(hgnc_term:Term),
+(perturbagen_concept:Concept)-[:PREF_TERM]->(perturbagen_term:Term),
+(tissue_concept_1:Concept)-[:PREF_TERM]->(tissue_term_1:Term),
+(tissue_concept_2:Concept)-[:PREF_TERM]->(tissue_term_2:Term),
+(rat_gene_concept:Concept)-[:CODE]->(rat_gene_code:Code)
+return distinct motrpac_code.CODE as MoTrPac_DS, rat_gene_code.CODE as rat_gene, hgnc_term.name as human_gene,tissue_term_1.name as tissue_MoTrPac, tissue_term_2.name as tissue_GTEx, expr_code.CODE as TPM,perturbagen_term.name as perturbagen,type(r3) as effect_direction limit 20
+
 ```
 
 ### 2) MoTrPAC Genes affected by exercise, are expressed in matched tissues in humans in GTEx, that are either matches or inverse matches of a perturbation signal in LINCS = compounds or perturbations that might promote or interfere with exercise benefit b) (FUTURE) Genes that are circadian in rat, are a signature match to perturbation in LINCS = compounds that might affect circadian rhythms/behaviors 
 ```
-code
+//Graphical representation showing the first line of results as a graph
+match (motrpac_code:Code {SAB:"MOTRPAC"})<-[:CODE]-(motrpac_concept:Concept)-[r1:associated_with]->(rat_gene_concept:Concept)-[r2:has_human_ortholog]->(hgnc_concept:Concept)-[r3:causally_influences {SAB:"MW"}]->(metabolite_concept:Concept)-[r9:correlated_with_condition {SAB:"MW"}]->(condition_concept:Concept),
+(metabolite_concept:Concept)-[r10:produced_by {SAB:"MW"}]->(tissue_concept_1:Concept),
+(motrpac_concept:Concept)-[r4:located_in]->(tissue_concept_1:Concept)-[r5:part_of]-(tissue_concept_2:Concept)-[r6:expresses {SAB:"GTEXEXP"}]->(gtex_concept:Concept)-[r7:expressed_in {SAB:"GTEXEXP"}]-(hgnc_concept:Concept),
+(gtex_concept:Concept)-[r8:has_expression {SAB:"GTEXEXP"}]->(expr_concept:Concept)-[:CODE]->(expr_code:Code),
+(hgnc_concept:Concept)-[:PREF_TERM]->(hgnc_term:Term),
+(metabolite_concept:Concept)-[:PREF_TERM]->(metabolite_term:Term),
+(condition_concept:Concept)-[:PREF_TERM]->(condition_term:Term),
+(tissue_concept_1:Concept)-[:PREF_TERM]->(tissue_term_1:Term),
+(tissue_concept_2:Concept)-[:PREF_TERM]->(tissue_term_2:Term),
+(rat_gene_concept:Concept)-[:CODE]->(rat_gene_code:Code)
+return * limit 1
+
+//Returning 20 line of results in tabular format
+match (motrpac_code:Code {SAB:"MOTRPAC"})<-[:CODE]-(motrpac_concept:Concept)-[r1:associated_with]->(rat_gene_concept:Concept)-[r2:has_human_ortholog]->(hgnc_concept:Concept)-[r3:causally_influences {SAB:"MW"}]->(metabolite_concept:Concept)-[r9:correlated_with_condition {SAB:"MW"}]->(condition_concept:Concept),
+(metabolite_concept:Concept)-[r10:produced_by {SAB:"MW"}]->(tissue_concept_1:Concept),
+(motrpac_concept:Concept)-[r4:located_in]->(tissue_concept_1:Concept)-[r5:part_of]-(tissue_concept_2:Concept)-[r6:expresses {SAB:"GTEXEXP"}]->(gtex_concept:Concept)-[r7:expressed_in {SAB:"GTEXEXP"}]->(hgnc_concept:Concept),
+(gtex_concept:Concept)-[r8:has_expression {SAB:"GTEXEXP"}]->(expr_concept:Concept)-[:CODE]->(expr_code:Code),
+(hgnc_concept:Concept)-[:PREF_TERM]->(hgnc_term:Term),
+(metabolite_concept:Concept)-[:PREF_TERM]->(metabolite_term:Term),
+(condition_concept:Concept)-[:PREF_TERM]->(condition_term:Term),
+(tissue_concept_1:Concept)-[:PREF_TERM]->(tissue_term_1:Term),
+(tissue_concept_2:Concept)-[:PREF_TERM]->(tissue_term_2:Term),
+(rat_gene_concept:Concept)-[:CODE]->(rat_gene_code:Code)
+return distinct motrpac_code.CODE as MoTrPac_DS, rat_gene_code.CODE as rat_gene, hgnc_term.name as human_gene,tissue_term_1.name as tissue_MoTrPac_MW, tissue_term_2.name as tissue_GTEx, expr_code.CODE as TPM,metabolite_term.name as metabolite,condition_term.name as condition limit 20
+
 ```
 
 ### 3) Find KF (or other) SNPs or mutations that lead to loss or gain of glycosylation site from GlyGen data, and how many of those genes are expressed in the GTEx liver dataset AND in the MoTrPAC liver data are a Rat-human expression match in liver AND are output RNA-protein correlate in liver
