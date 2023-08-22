@@ -3,7 +3,7 @@
 # Schemas of the various DCCs
 #### Jump to DCC section:
 
-[MOTORPAC](#motorpac)  
+[MOTRPAC](#motorpac)  
 [Kids First](#kids-first)
 
 ----
