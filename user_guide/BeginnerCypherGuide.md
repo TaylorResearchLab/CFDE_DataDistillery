@@ -101,7 +101,7 @@ RETURN DISTINCT hgnc_term.name AS gene_name, code.SAB AS hgnc_start_code, type(r
 LIMIT 10
 ```
 
-
+---------------------------
 Return MOTORPAC to ENSEMBL path
 ```cypher
 MATCH (mp_cui:Concept)-[:CODE]->(mp_code:Code {SAB:'MOTORPAC'}) 
@@ -111,10 +111,56 @@ LIMIT 1
 ```
 
 
-### Simple Optimization techniques
+## Simple Optimization techniques
 
 #### If you're worried about the speed of a query it's a good idea to include as much information as you can and to be as specific as possible.
 For example, including the Concept-to-Concept relationship types as well as the Code SAB types will speed up the query significantly.
+
+
+
+## DCC specific queries
+
+
+
+##### 4D Nucleome (4DN)	
+
+##### Extracellular RNA Communication Program (ERCC)	RBP	 Regulatory Element	
+
+##### GlyGen	
+
+##### Genotype Tissue Expression (GTEx)	
+
+##### The Human BioMolecular Atlas Program (HuBMAP)
+
+##### Illuminating the Druggable Genome (IDG)	
+
+##### Gabriella Miller Kids First (GMKF)	
+
+##### The Library of Integrated Network-Based Cellular Signatures (LINCS)	
+
+##### The Molecular Transducers of Physical Activity Consortium (MoTrPAC)	
+
+##### Metabolomics Workbench (MW)	
+
+##### Stimulating Peripheral Activity to Relieve Conditions (SPARC)	
+
+
+
+
+
+
+Additional Datasets	
+CLINVAR	
+CMAP
+HPOMP
+HGNCHPO	
+NCOPHGNC
+HCOPMP
+MSIGDB
+HSCLO
+
+
+
 
 
 
