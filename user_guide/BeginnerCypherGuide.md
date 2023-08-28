@@ -123,13 +123,13 @@ For example, including the Concept-to-Concept relationship types as well as the 
 
 
 
-##### 4D Nucleome (4DN)	
+### 4D Nucleome (4DN)	
 
-##### Extracellular RNA Communication Program (ERCC)	RBP	 Regulatory Element	
+### Extracellular RNA Communication Program (ERCC)	RBP	 Regulatory Element	
 
-##### GlyGen	
+### GlyGen	
 
-##### Genotype Tissue Expression (GTEx)	
+### Genotype Tissue Expression (GTEx)	
 
 Show the GTEXEXP node and its three edges to an HGNC node, an UBERON node and an EXPBINS node. The EXPBINS node is where the TPM value from GTEx is located (on the upperbound and lowerbound properties).
 ```cypher
@@ -150,19 +150,19 @@ MATCH (gtex_cui)-[r5:p_value]-(pvalbin_concept:Concept)-[r6:CODE]-(pvalbin_code:
 RETURN * LIMIT 1
 ```
 
-##### The Human BioMolecular Atlas Program (HuBMAP)
+### The Human BioMolecular Atlas Program (HuBMAP)
 
-##### Illuminating the Druggable Genome (IDG)	
+### Illuminating the Druggable Genome (IDG)	
 
-##### Gabriella Miller Kids First (GMKF)	
+### Gabriella Miller Kids First (GMKF)	
 
-##### The Library of Integrated Network-Based Cellular Signatures (LINCS)	
+### The Library of Integrated Network-Based Cellular Signatures (LINCS)	
 
-##### The Molecular Transducers of Physical Activity Consortium (MoTrPAC)	
+### The Molecular Transducers of Physical Activity Consortium (MoTrPAC)	
 
-##### Metabolomics Workbench (MW)	
+### Metabolomics Workbench (MW)	
 
-##### Stimulating Peripheral Activity to Relieve Conditions (SPARC)	
+### Stimulating Peripheral Activity to Relieve Conditions (SPARC)	
 
 
 
