@@ -102,6 +102,8 @@ RETURN DISTINCT hgnc_term.name AS gene_name, code.SAB AS hgnc_start_code, type(r
 LIMIT 10
 ```
 
+
+
 ---------------------------
 Return MOTORPAC to ENSEMBL path
 ```cypher
@@ -110,6 +112,7 @@ MATCH (mp_cui)-[:associated_with {SAB:'MOTORPAC'}]-(ensRat_cui:Concept)-[:CODE]-
 RETURN *
 LIMIT 1
 ```
+
 
 
 ## Simple Optimization techniques
@@ -140,7 +143,6 @@ MATCH (gtex_cui)-[r5:has_expression]-(expbin_concept:Concept)-[r6:CODE]-(expbin_
 RETURN * LIMIT 1
 ```
 
-
 Show the GTEXEQTL node and its three edges to an HGNC node, an UBERON node and a PVALUEBINS node. The PVALUEBINS node is where the p-value for the eQTL is located (on the upperbound and lowerbound properties).
 ```cypher
 MATCH (gtex_cui:Concept)-[r0:CODE]-(gtex_exp_code:Code {SAB:'GTEXEQTL'}) 
@@ -154,9 +156,23 @@ RETURN * LIMIT 1
 
 ### Illuminating the Druggable Genome (IDG)	
 
+Show the IDGP mapping between PUBCHEM and UNIPROTKB
+```cypher 
+MATCH (pubchem_code:Code {SAB:'PUBCHEM'})-[:CODE]-(pubchem_cui:Concept)-[:bioactivity {SAB:'IDGP'}]-(uniprot_cui:Concept)-[:CODE]-(uniprot_code:Code {SAB:"UNIPROTKB"})
+RETURN * LIMIT 1
+```
+
+Show the IDGD mapping between PUBCHEM and SNOMEDUS_CT
+
 ### Gabriella Miller Kids First (GMKF)	
 
 ### The Library of Integrated Network-Based Cellular Signatures (LINCS)	
+
+
+```cypher
+match (hgnc_cui)-[pubchem_rel:positively_regulated_by {SAB:'LINCS'}]-(pubchem_cui2:Concept)-[:CODE]-(pubchem_code2:Code {SAB:'PUBCHEM'}) //-[:PT]-(pubchem_2_term:Term)
+match (pubchem_cui2)-[:PREF_TERM]-(pubchem_2_term:Term)
+```
 
 ### The Molecular Transducers of Physical Activity Consortium (MoTrPAC)	
 
