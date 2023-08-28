@@ -76,6 +76,7 @@ RETURN *
 LIMIT 1
 ```
 
+
 #### 5. Another way to query relationships between 2 ontologies/datasets without necessarily including the Code nodes on either end of the query is to know the SAB and/or TYPE of relationship 
 
 ```cypher
