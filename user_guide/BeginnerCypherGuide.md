@@ -1,4 +1,4 @@
-# Guide for how to explore the Data Distillery graph using Cypher
+# Guide for exploring the Data Distillery graph using Cypher
 --------
 #### This guide is meant to be an introduction for how to write queries to explore the Data Distillery Knowledge graph. A basic understanding of Cypher is assumed. If you are unfamiliar with Cypher please refer to the [Neo4j docs](https://neo4j.com/developer/cypher/). 
 
