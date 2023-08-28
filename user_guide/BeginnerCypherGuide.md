@@ -131,6 +131,25 @@ For example, including the Concept-to-Concept relationship types as well as the 
 
 ##### Genotype Tissue Expression (GTEx)	
 
+Show the GTEXEXP node and its three edges to an HGNC node, an UBERON node and an EXPBINS node. The EXPBINS node is where the TPM value from GTEx is located (on the upperbound and lowerbound properties).
+```cypher
+MATCH (gtex_cui:Concept)-[r0:CODE]-(gtex_exp_code:Code {SAB:'GTEXEXP'}) 
+MATCH (gtex_cui)-[r1:expressed_in]-(hgnc_concept:Concept)-[r2:CODE]-(hgnc_code:Code {SAB:'HGNC'})
+MATCH (gtex_cui)-[r3:expressed_in]-(ub_concept:Concept)-[r4:CODE]-(ub_code:Code {SAB:'UBERON'})
+MATCH (gtex_cui)-[r5:has_expression]-(expbin_concept:Concept)-[r6:CODE]-(expbin_code:Code {SAB:'EXPBINS'})
+RETURN * LIMIT 1
+```
+
+
+Show the GTEXEQTL node and its three edges to an HGNC node, an UBERON node and a PVALUEBINS node. The PVALUEBINS node is where the p-value for the eQTL is located (on the upperbound and lowerbound properties).
+```cypher
+MATCH (gtex_cui:Concept)-[r0:CODE]-(gtex_exp_code:Code {SAB:'GTEXEQTL'}) 
+MATCH (gtex_cui)-[r1]-(hgnc_concept:Concept)-[r2:CODE]-(hgnc_code:Code {SAB:'HGNC'})
+MATCH (gtex_cui)-[r3:located_in]-(ub_concept:Concept)-[r4:CODE]-(ub_code:Code {SAB:'UBERON'})
+MATCH (gtex_cui)-[r5:p_value]-(pvalbin_concept:Concept)-[r6:CODE]-(pvalbin_code:Code {SAB:'PVALUEBINS'} ) 
+RETURN * LIMIT 1
+```
+
 ##### The Human BioMolecular Atlas Program (HuBMAP)
 
 ##### Illuminating the Druggable Genome (IDG)	
