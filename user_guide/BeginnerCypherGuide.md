@@ -168,10 +168,11 @@ Show the IDGD mapping between PUBCHEM and SNOMEDUS_CT
 
 ### The Library of Integrated Network-Based Cellular Signatures (LINCS)	
 
-
+Show the LINCS edge which maps HGNC nodes to PUBCHEM nodes. There is also a `negatively_regulated_by` relationship 
 ```cypher
-match (hgnc_cui)-[pubchem_rel:positively_regulated_by {SAB:'LINCS'}]-(pubchem_cui2:Concept)-[:CODE]-(pubchem_code2:Code {SAB:'PUBCHEM'}) //-[:PT]-(pubchem_2_term:Term)
-match (pubchem_cui2)-[:PREF_TERM]-(pubchem_2_term:Term)
+MATCH (hgnc_cui:Concept)-[:CODE]->(hgnc_code:Code {SAB:'HGNC'})-[]->(hgnc_term:Term)
+MATCH (hgnc_cui)-[:positively_regulated_by {SAB:'LINCS'}]-(pubchem_cui:Concept)-[:CODE]-(pubchem_code:Code {SAB:'PUBCHEM'})
+RETURN * LIMIT 1 
 ```
 
 ### The Molecular Transducers of Physical Activity Consortium (MoTrPAC)	
