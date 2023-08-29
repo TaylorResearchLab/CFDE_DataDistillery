@@ -61,7 +61,7 @@ RETURN *
 LIMIT 1
 ```
 
-You can also directly access the the 'preferred term' through the corresponding Concept node through a `PREF_TERM` relationship
+You can also directly access the 'preferred term' through the corresponding Concept node through a `PREF_TERM` relationship
 ```cypher
 MATCH (hgnc_code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[:PREF_TERM]-(term:Term)
 RETURN * 
@@ -191,6 +191,12 @@ RETURN * LIMIT 1
 
 
 ### Metabolomics Workbench (MW)	
+
+Show the Metabolics Workbench mapping between an HGNC node an a PUBCHEM node
+```cypher
+MATCH (hgnc_code:Code {SAB:"HGNC"})-[:CODE]-(hgnc_concept:Concept)-[r3:causally_influences {SAB:"MW"}]->(pubchem_concept:Concept)-[:CODE]-(pubchem_code:Code)
+RETURN * LIMIT 1
+```
 
 ### Stimulating Peripheral Activity to Relieve Conditions (SPARC)	
 
