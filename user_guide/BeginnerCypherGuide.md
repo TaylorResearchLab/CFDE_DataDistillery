@@ -154,6 +154,7 @@ RETURN * LIMIT 1
 
 ### The Human BioMolecular Atlas Program (HuBMAP)
 
+
 ### Illuminating the Druggable Genome (IDG)	
 
 Show the IDGP mapping between PUBCHEM and UNIPROTKB
@@ -166,6 +167,12 @@ Show the IDGD mapping between PUBCHEM and SNOMEDUS_CT
 
 ### Gabriella Miller Kids First (GMKF)	
 
+// Show the `belongs_to_cohort` relationship between a Kids First Patient node (KFPT) and a Kids First Cohort node (KFCOHORT).
+```cypher
+MATCH (kf_pt_code:Code {SAB:'KFPT'})-[:CODE]-(kf_pt_cui)-[:belongs_to_cohort]-(kf_cohort_cui:Concept)-[:CODE]-(kf_cohort_code:Code {SAB:'KFCOHORT'})
+RETURN * LIMIT 1
+```
+
 ### The Library of Integrated Network-Based Cellular Signatures (LINCS)	
 
 Show the LINCS edge which maps HGNC nodes to PUBCHEM nodes. There is also a `negatively_regulated_by` relationship 
@@ -176,6 +183,12 @@ RETURN * LIMIT 1
 ```
 
 ### The Molecular Transducers of Physical Activity Consortium (MoTrPAC)	
+
+```cypher
+MATCH (motrpac_code:Code {SAB:"MOTRPAC"})<-[:CODE]-(motrpac_concept:Concept)-[r1:associated_with]->(rat_gene_concept:Concept)-[r2:has_human_ortholog]->(hgnc_concept:Concept)-[:CODE]-(hgnc_code:Code {SAB:'HGNC'})
+RETURN * LIMIT 1
+```
+
 
 ### Metabolomics Workbench (MW)	
 
