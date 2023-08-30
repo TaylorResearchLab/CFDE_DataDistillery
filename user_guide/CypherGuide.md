@@ -12,7 +12,7 @@
 ### The simplest way to find a Code in the graph is to search for it using it's source abbreviation (SAB).
 
 #### 1. How can I return a Code node from a specific ontology/dataset, for example an HGNC Code?
-Specify the HGNC as the SAB property.
+Specify the HGNC as the SAB property:
 ```cypher
 MATCH (hgnc_code:Code {SAB:'HGNC'})
 RETURN * 
@@ -26,7 +26,7 @@ MATCH (hgnc_code:Code {SAB:HGNC_SAB})
 RETURN * 
 LIMIT 1
 ```
-or using the `WHERE` keyword.
+or using the `WHERE` keyword:
 
 ```cypher
 MATCH (hgnc_code:Code) WHERE hgnc_code.SAB = 'HGNC'
@@ -42,7 +42,7 @@ MATCH (code:Code) WHERE code.SAB STARTS WITH 'ENCODE'
 RETURN DISTINCT code.SAB
 ```
 
-or if you want to include multiple SABs from a DCC (this will return 'GTEXEXP' and 'GTEXEQTL').
+or if you want to include multiple SABs from a DCC (this will return 'GTEXEXP' and 'GTEXEQTL'):
 ```cypher
 MATCH (code:Code) WHERE code.SAB CONTAINS 'GTEX'
 RETURN DISTINCT code.SAB
@@ -50,7 +50,7 @@ RETURN DISTINCT code.SAB
 
 
 #### 2. How can I return a Code node and its Concept node from a specific ontology/dataset, for example an HGNC Code node and its Concept node?
-Every Code node is connected to a Concept node by a `CODE` relationship
+Every Code node is connected to a Concept node by a `CODE` relationship:
 ```cypher
 MATCH (hgnc_code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)
 RETURN * 
@@ -58,7 +58,7 @@ LIMIT 1
 ```
 
 #### 3. To return the human-readable string that a Code represents you can return the Term node along with the Code. 
-Note: Not all Codes have Terms attached to them. If a Code does have Term nodes then it will almost always have a 'preferred term'. This 'preferred term' is always attached to it's Code by the `PT` relationship
+Note: Not all Codes have Terms attached to them. If a Code does have Term nodes then it will almost always have a 'preferred term'. This 'preferred term' is always attached to it's Code by the `PT` relationship:
 
 ```cypher
 MATCH (hgnc_code:Code {SAB:'HGNC'})-[:PT]-(term:Term)
@@ -66,7 +66,7 @@ RETURN *
 LIMIT 1
 ```
 
-You can also directly access the 'preferred term' through the corresponding Concept node through a `PREF_TERM` relationship
+You can also directly access the 'preferred term' through the corresponding Concept node through a `PREF_TERM` relationship:
 ```cypher
 MATCH (hgnc_code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[:PREF_TERM]-(term:Term)
 RETURN * 
@@ -74,7 +74,7 @@ LIMIT 1
 ```
 
 #### 4. Ontologies/datasets are connected to one another through Concept-Concept relationships, so you must query the concept space to find these relationships.
-Return an `HGNC` to `GO` path (code)-(concept)-(concept)-(code)
+Return an `HGNC` to `GO` path (code)-(concept)-(concept)-(code):
 ```cypher
 MATCH (code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[r]-(concept2:Concept)-[:CODE]-(code2:Code {SAB:'GO'})
 RETURN * 
@@ -84,7 +84,7 @@ LIMIT 1
 
 #### 5. Another way to query relationships between 2 ontologies/datasets without necessarily including the Code nodes on either end of the query is to know the SAB and/or TYPE of relationship. It's important to realize that while every Code has an SAB that identifies what ontology/dataset it belongs to, relationships in the graph also have SABs.
 
-In this example, the `type` of relationship is `process_involves_gene` and the SAB is `NCI`
+In this example, the `type` of relationship is `process_involves_gene` and the SAB is `NCI`:
 ```cypher
 MATCH (code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[r:process_involves_gene {SAB:'NCI'}]-(concept2:Concept)-[:CODE]-(code2:Code {SAB:'GO'})
 RETURN * 
@@ -126,7 +126,90 @@ LIMIT 10
 ### 4D Nucleome (4DN)	
 
 
-### Extracellular RNA Communication Program (ERCC)	RBP	 Regulatory Element	
+### Extracellular RNA Communication Program (ERCC)	
+
+#### RBP	 	
+
+Query1:
+```cypher
+MATCH (a:Code {CodeID: 'UBERON 0001088'})
+MATCH (b:Code) WHERE b.CodeID in ['ENSEMBL ENSG00000221461', 'ENSEMBL ENSG00000253190', 'ENSEMBL ENSG00000231764', 'ENSEMBL ENSG00000277027']
+MATCH (c:Code) WHERE c.CodeID in ['UNIPROTKB P05455', 'UNIPROTKB Q12874', 'UNIPROTKB Q9GZR7', 'UNIPROTKB Q9HAV4', 'UNIPROTKB Q2TB10']
+MATCH (a)<-[:CODE]-(:Concept)<-[:predicted_in]-(p:Concept)-[:CODE]->(c)
+MATCH (p)-[:molecularly_interacts_with]->(q:Concept)-[:overlaps]->(:Concept)-[:CODE]->(b)
+MATCH (q)-[:CODE]->(r:Code)
+RETURN DISTINCT c.CodeID AS RBP,r.CodeID AS RBS,b.CodeID AS Gene,a.CodeID AS Biosample;
+```
+
+Query2:
+```cypher
+MATCH (a:Code {CodeID: 'UBERON 0001088'})
+MATCH (b:Code) WHERE b.CodeID in ['ENSEMBL ENSG00000221461', 'ENSEMBL ENSG00000253190', 'ENSEMBL ENSG00000231764', 'ENSEMBL ENSG00000277027']
+MATCH (c:Code) WHERE c.CodeID in ['UNIPROTKB P05455', 'UNIPROTKB Q12874', 'UNIPROTKB Q9GZR7', 'UNIPROTKB Q9HAV4', 'UNIPROTKB Q2TB10']
+MATCH (a)<-[:CODE]-(:Concept)<-[:predicted_in]-(p:Concept)-[:CODE]->(c)
+MATCH (p)-[:molecularly_interacts_with]->(:Concept)<-[:is_subsequence_of]-(q:Concept)-[:CODE]->(r:Code)
+MATCH (q)-[:overlaps]-(:Concept)-[:CODE]->(b)
+RETURN DISTINCT c.CodeID AS RBP,r.CodeID AS RBS,b.CodeID AS Gene,a.CodeID AS Biosample;
+```
+
+Query3:
+```cypher
+MATCH (a:Code {CodeID: 'UBERON 0001088'})
+MATCH (b:Code) WHERE b.CodeID in ['ENSEMBL ENSG00000221461', 'ENSEMBL ENSG00000253190', 'ENSEMBL ENSG00000231764', 'ENSEMBL ENSG00000277027']
+MATCH (c:Code) WHERE c.CodeID in ['UNIPROTKB P05455', 'UNIPROTKB Q12874', 'UNIPROTKB Q9GZR7', 'UNIPROTKB Q9HAV4', 'UNIPROTKB Q2TB10']
+MATCH (a)<-[:CODE]-(p:Concept)<-[:predicted_in]-(q:Concept)-[:CODE]->(c)
+MATCH (q)-[:molecularly_interacts_with]->(:Concept)<-[:is_subsequence_of]-(r:Concept)-[:CODE]->(s:Code)
+MATCH (p)<-[]-(r)-[:overlaps]->(:Concept)-[:CODE]->(b)
+RETURN DISTINCT c.CodeID AS RBP,s.CodeID AS RBS,b.CodeID AS Gene,a.CodeID AS Biosample;
+```
+
+Query4:
+```cypher
+MATCH (a:Code {CodeID: 'UBERON 0001088'})
+MATCH (b:Code) WHERE b.CodeID in ['ENSEMBL ENSG00000221461', 'ENSEMBL ENSG00000253190', 'ENSEMBL ENSG00000231764', 'ENSEMBL ENSG00000277027']
+MATCH (c:Code) WHERE c.CodeID in ['UNIPROTKB P05455', 'UNIPROTKB Q12874', 'UNIPROTKB Q9GZR7', 'UNIPROTKB Q9HAV4', 'UNIPROTKB Q2TB10']
+MATCH (a)<-[:CODE]-(p:Concept)<-[:predicted_in]-(q:Concept)-[:CODE]->(c)
+MATCH (q)-[:molecularly_interacts_with]->(:Concept)<-[:is_subsequence_of]-(r:Concept)-[:CODE]->(s:Code)
+MATCH (p)<-[:correlated_in]-(r)-[:overlaps]->(:Concept)-[:CODE]->(b)
+RETURN DISTINCT c.CodeID AS RBP,s.CodeID AS RBS,b.CodeID AS Gene,a.CodeID AS Biosample;
+```
+
+#### Regulatory Element
+
+Query1:
+```cypher
+MATCH (a:Code {CodeID: 'UBERON 0002367'})
+MATCH (a)<-[:CODE]-(p:Concept)-[:part_of]->(q:Concept)-[:CODE]->(:Code {SAB: 'ENCODE.CCRE.ACTIVITY'})
+MATCH (q)<-[:part_of]-(r:Concept)-[:CODE]->(s:Code {SAB: 'ENCODE.CCRE'})
+RETURN DISTINCT a.CodeID AS Tissue,s.CodeID AS cCRE
+```
+
+Query2:
+```cypher
+MATCH (a:Code {CodeID: 'UBERON 0002367'})
+MATCH (a)<-[:CODE]-(p:Concept)-[:part_of]->(q:Concept)-[:CODE]->(:Code {SAB: 'ENCODE.CCRE.ACTIVITY'})
+MATCH (q)<-[:part_of]-(r:Concept)<-[:located_in]-(:Concept)-[:part_of]->(:Concept)<-[:part_of]-(:Concept)-[:CODE]->(a)
+MATCH (r)-[:CODE]->(s:Code {SAB: 'ENCODE.CCRE'})
+RETURN DISTINCT a.CodeID AS Tissue, s.CodeID AS cCRE
+```
+
+Query3:
+```cypher
+MATCH (a:Code {CodeID: 'UBERON 0002367'})
+MATCH (b:Code {CodeID: 'ENCODE.CCRE EH38E3881508'})
+MATCH (a)<-[:CODE]-(:Concept)-[:part_of]->(p:Concept)<-[:part_of]-(:Concept)-[:CODE]->(b)
+MATCH (p)-[:isa]->(:Concept)-[:CODE]->(q:Code {SAB: 'ENCODE.CCRE.H3K27AC'})
+MATCH (p)-[:isa]->(:Concept)-[:CODE]->(r:Code {SAB: 'ENCODE.CCRE.H3K4ME3'})
+MATCH (p)-[:isa]->(:Concept)-[:CODE]->(s:Code {SAB: 'ENCODE.CCRE.CTCF'})
+RETURN a.CodeID AS Tissue,b.CodeID AS cCRE,q.CODE AS H3K27AC,r.CODE AS H3K4ME3,s.CODE AS CTCF
+```
+
+Query4:
+```cypher
+MATCH (a:Code {CodeID: 'ENCODE.CCRE EH38E3881508'})
+MATCH (a)<-[:CODE]-(:Concept)-[:part_of]->(:Concept)-[:regulates]->(:Concept)-[:CODE]->(p:Code {SAB: 'ENSEMBL'})
+RETURN DISTINCT a.CodeID AS cCRE,p.CodeID AS Gene
+```
 
 
 ### GlyGen	
