@@ -12,7 +12,7 @@
 ### The simplest way to find a Code in the graph is to search for it using it's source abbreviation (SAB).
 
 #### 1. How can I return a Code node from a specific ontology/dataset, for example an HGNC Code?
-Specify the HGNC as the SAB property:
+Specify the `HGNC` as the SAB property:
 ```cypher
 MATCH (hgnc_code:Code {SAB:'HGNC'})
 RETURN * 
@@ -42,7 +42,7 @@ MATCH (code:Code) WHERE code.SAB STARTS WITH 'ENCODE'
 RETURN DISTINCT code.SAB
 ```
 
-or if you want to include multiple SABs from a DCC (this will return 'GTEXEXP' and 'GTEXEQTL'):
+or if you want to include multiple SABs from a DCC (this will return `GTEXEXP` and `GTEXEQTL`):
 ```cypher
 MATCH (code:Code) WHERE code.SAB CONTAINS 'GTEX'
 RETURN DISTINCT code.SAB
@@ -50,7 +50,7 @@ RETURN DISTINCT code.SAB
 
 
 #### 2. How can I return a Code node and its Concept node from a specific ontology/dataset, for example an HGNC Code node and its Concept node?
-Every Code node is connected to a Concept node by a `CODE` relationship:
+Every Code node is connected to a Concept node by a 'CODE' relationship:
 ```cypher
 MATCH (hgnc_code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)
 RETURN * 
@@ -58,7 +58,7 @@ LIMIT 1
 ```
 
 #### 3. To return the human-readable string that a Code represents you can return the Term node along with the Code. 
-Note: Not all Codes have Terms attached to them. If a Code does have Term nodes then it will almost always have a 'preferred term'. This 'preferred term' is always attached to it's Code by the `PT` relationship:
+Note: Not all Codes have Terms attached to them. If a Code does have Term nodes then it will almost always have a 'preferred term'. This 'preferred term' is always attached to it's Code by the 'PT' relationship:
 
 ```cypher
 MATCH (hgnc_code:Code {SAB:'HGNC'})-[:PT]-(term:Term)
@@ -66,7 +66,7 @@ RETURN *
 LIMIT 1
 ```
 
-You can also directly access the 'preferred term' through the corresponding Concept node through a `PREF_TERM` relationship:
+You can also directly access the 'preferred term' through the corresponding Concept node through a 'PREF_TERM' relationship:
 ```cypher
 MATCH (hgnc_code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[:PREF_TERM]-(term:Term)
 RETURN * 
@@ -84,21 +84,21 @@ LIMIT 1
 
 #### 5. Another way to query relationships between 2 ontologies/datasets without necessarily including the Code nodes on either end of the query is to know the SAB and/or TYPE of relationship. It's important to realize that while every Code has an SAB that identifies what ontology/dataset it belongs to, relationships in the graph also have SABs.
 
-In this example, the `type` of relationship is `process_involves_gene` and the SAB is `NCI`:
+In this example, the 'type' of relationship is `process_involves_gene` and the SAB is `NCI`:
 ```cypher
 MATCH (code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[r:process_involves_gene {SAB:'NCI'}]-(concept2:Concept)-[:CODE]-(code2:Code {SAB:'GO'})
 RETURN * 
 LIMIT 1
 ```
 
-It can be helpful to return the `type` and `SAB` of the relationship between Concepts of interest. You can easily do this by returning them in a table. For example, if you want to find all the unique relationship `type`'s and `SAB`'s between the `HGNC` and `GO` datasets you can write something like this:
+It can be helpful to return the 'type' and 'SAB' of the relationship between Concepts of interest. You can easily do this by returning them in a table. For example, if you want to find all the unique relationship 'types' and 'SABs' between the `HGNC` and `GO` datasets you can write something like this:
 
 ```cypher
 MATCH (code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[r]-(concept2:Concept)-[:CODE]-(code2:Code {SAB:'GO'})
 RETURN DISTINCT code.SAB, type(r), r.SAB, code2.SAB
 ```
 #### 6. How can I find out what relationships exist between my ontology/dataset and other ontologies/datasets
-If you simply want to find the relationship `type`'s and `SAB`'s between a dataset of interest, for example `HGNC`, and all other datasets you can write something like this: 
+If you simply want to find the relationship 'types' and 'SABs' between a dataset of interest, for example `HGNC`, and all other datasets you can write something like this: 
 ```cypher
 MATCH (code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[r]-(concept2:Concept)-[:CODE]-(code2:Code)
 RETURN DISTINCT code.SAB AS hgnc_start_code, type(r) AS edge_TYPE, r.SAB AS edge_SAB,  code2.SAB AS SAB_end_code
