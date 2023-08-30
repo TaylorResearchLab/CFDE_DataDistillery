@@ -111,19 +111,14 @@ LIMIT 10
 ```
 
 
-
-
-
-
 ## Some examples of DCC specific queries
 
+### <ins>4D Nucleome (4DN)</ins>
 
+```cypher
+```
 
-
-### 4D Nucleome (4DN)	
-
-
-### Extracellular RNA Communication Program (ERCC)	
+### <ins>Extracellular RNA Communication Program (ERCC)</ins>
 
 #### RBP	 	
 
@@ -209,10 +204,12 @@ RETURN DISTINCT a.CodeID AS cCRE,p.CodeID AS Gene
 ```
 
 
-### GlyGen	
+### <ins>GlyGen</ins>
 
+```cypher
+```
 
-### Genotype Tissue Expression (GTEx)	
+### <ins>Genotype Tissue Expression (GTEx)</ins>	
 
 Show the `GTEXEXP` node and its three edges to an `HGNC` node, an `UBERON` node and an `EXPBINS` node. The `EXPBINS` node is where the median TPM value from GTEx is located (on the upperbound and lowerbound properties).
 ```cypher
@@ -232,10 +229,12 @@ MATCH (gtex_cui)-[r5:p_value]-(pvalbin_concept:Concept)-[r6:CODE]-(pvalbin_code:
 RETURN * LIMIT 1
 ```
 
-### The Human BioMolecular Atlas Program (HuBMAP)
+### <ins>The Human BioMolecular Atlas Program (HuBMAP)</ins>
 
+```cypher
+```
 
-### Illuminating the Druggable Genome (IDG)	
+### <ins>Illuminating the Druggable Genome (IDG)</ins>
 
 Show the `IDGP` (IDG-protein) mapping between `PUBCHEM` and `UNIPROTKB`
 ```cypher 
@@ -249,7 +248,7 @@ MATCH (pubchem_code:Code {SAB:'PUBCHEM'})-[:CODE]-(pubchem_cui:Concept)-[:indica
 RETURN * LIMIT 1
 ```
 
-### Gabriella Miller Kids First (GMKF)	
+### <ins>Gabriella Miller Kids First (GMKF)</ins>
 
 // Show the `belongs_to_cohort` relationship between a `KFPT` node (Kids First Patient) and a `KFCOHORT` (Kids First Cohort) node:
 ```cypher
@@ -257,7 +256,7 @@ MATCH (kf_pt_code:Code {SAB:'KFPT'})-[:CODE]-(kf_pt_cui)-[:belongs_to_cohort]-(k
 RETURN * LIMIT 1
 ```
 
-### The Library of Integrated Network-Based Cellular Signatures (LINCS)	
+### <ins>The Library of Integrated Network-Based Cellular Signatures (LINCS)</ins>
 
 Show the `LINCS` edge which maps `HGNC` nodes to `PUBCHEM` nodes (there is also a `negatively_regulated_by` relationship): 
 ```cypher
@@ -266,7 +265,7 @@ MATCH (hgnc_cui)-[:positively_regulated_by {SAB:'LINCS'}]-(pubchem_cui:Concept)-
 RETURN * LIMIT 1 
 ```
 
-### The Molecular Transducers of Physical Activity Consortium (MoTrPAC)	
+### <ins>The Molecular Transducers of Physical Activity Consortium (MoTrPAC)</ins>
 
 ```cypher
 MATCH (motrpac_code:Code {SAB:"MOTRPAC"})<-[:CODE]-(motrpac_concept:Concept)-[r1:associated_with]->(rat_gene_concept:Concept)-[r2:has_human_ortholog]->(hgnc_concept:Concept)-[:CODE]-(hgnc_code:Code {SAB:'HGNC'})
@@ -274,7 +273,7 @@ RETURN * LIMIT 1
 ```
 
 
-### Metabolomics Workbench (MW)	
+### <ins>Metabolomics Workbench (MW)</ins>
 
 Show the Metabolics Workbench mapping between an HGNC node an a PUBCHEM node:
 ```cypher
@@ -282,23 +281,24 @@ MATCH (hgnc_code:Code {SAB:"HGNC"})-[:CODE]-(hgnc_concept:Concept)-[r3:causally_
 RETURN * LIMIT 1
 ```
 
-### Stimulating Peripheral Activity to Relieve Conditions (SPARC)	
+### <ins>Stimulating Peripheral Activity to Relieve Conditions (SPARC)</ins>
+
+```cypher
+```
 
 
 
 
-
-
-SABs of Additional Datasets	
-CLINVAR	
-CMAP
-HPOMP
-HGNCHPO	
-NCOPHGNC
-HCOPMP
-MSIGDB
-HSCLO
-
+#### SABs of Additional Datasets	
+* CLINVAR	
+* CMAP
+* HPOMP
+* HGNCHPO	
+* HCOPHGNC
+* HCOPMP
+* MSIGDB
+* HSCLO
+* RATHCOP
 
 
 
