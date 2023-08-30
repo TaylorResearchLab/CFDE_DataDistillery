@@ -98,14 +98,14 @@ MATCH (code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[r]-(concept2:Concept)-
 RETURN DISTINCT code.SAB, type(r), r.SAB, code2.SAB
 ```
 #### 6. How can I find out what relationships exist between my ontology/dataset and other ontologies/datasets
-Find datasets that have relationships to `HGNC` genes and return properties in a table.
+If you simply want to find the relationship `type`'s and `SAB`'s between a dataset of interest, for example `HGNC`, and all other datasets you can write something like this: 
 ```cypher
 MATCH (code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[r]-(concept2:Concept)-[:CODE]-(code2:Code)
 RETURN DISTINCT code.SAB AS hgnc_start_code, type(r) AS edge_TYPE, r.SAB AS edge_SAB,  code2.SAB AS SAB_end_code
 LIMIT 10
 ```
 
-we can go a step further and return the Terms on either end of this query,
+we can also go a step further and return the Terms on either end of this query:
 
 ```cypher
 MATCH (hgnc_term:Term)-[:PT]-(code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[r]-(concept2:Concept)-[:CODE]-(code2:Code)-[:PT]-(term2:Term)
