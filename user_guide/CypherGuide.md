@@ -5,11 +5,11 @@
 #### For documentation concerning how the Data Distillery knowledge graph is generated or for information about the general schema of the graph please see our [github docs page](https://ubkg.docs.xconsortia.org).
 #### For documentation concerning the specific schema for a DCCs dataset please see our [Data Dictionary](https://docs.google.com/document/d/1ubKqkQb40rC7jKRxY9z-SxtsdKqRNZg3Nvds8SpTIbM/edit).
 
-#### We assume you have the latest version of the Data Distillery (v3). Some queries will fail to return anything if you are working with an older version of the graph.
+#### It is assumed you are working with the latest version of the Data Distillery graph which can be found on [globus](https://app.globus.org/file-manager?origin_id=24c2ee95-146d-4513-a1b3-ac0bfdb7856f&origin_path=%2Fprojects%2Fdata-distillery%2FValidated%2FDistribution%2F). Some queries will fail to return anything if you are working with an older version of the graph.
 --------
 
 
-### The simplest way to find a Code in the graph is to search for it using it's source abbreviation (SAB)
+### The simplest way to find a Code in the graph is to search for it using it's source abbreviation (SAB).
 
 #### 1. How can I return a Code node from a specific ontology/dataset, for example an HGNC Code?
 Specify the HGNC as the SAB property.
@@ -34,8 +34,13 @@ RETURN *
 LIMIT 1
 ```
 
-All of these are equivalent, although sometimes it can be helpful to use the `WHERE` keyword combined with `STARTS WITH` or `CONTAINS` if you can't remember a specific SAB exactly...
+All of these are equivalent, although sometimes it can be helpful to use the `WHERE` keyword combined with `STARTS WITH` or `CONTAINS` if you can't remember a specific SAB exactly.
 
+For example, if you know you want to use an `ENCODE` SAB in your query but can't remember the exact spelling you can simply return all SABs starting with 'ENCODE':
+```cypher
+MATCH (code:Code) WHERE code.SAB STARTS WITH 'ENCODE'
+RETURN DISTINCT code.SAB
+```
 
 or if you want to include multiple SABs from a DCC (this will return 'GTEXEXP' and 'GTEXEQTL').
 ```cypher
@@ -53,7 +58,7 @@ LIMIT 1
 ```
 
 #### 3. To return the human-readable string that a Code represents you can return the Term node along with the Code. 
-Not all Codes have Terms attached to them. If a Code does have Term nodes then it will almost always have a 'preferred term'. This 'preferred term' is always attached to it's Code by the `PT` relationship
+Note: Not all Codes have Terms attached to them. If a Code does have Term nodes then it will almost always have a 'preferred term'. This 'preferred term' is always attached to it's Code by the `PT` relationship
 
 ```cypher
 MATCH (hgnc_code:Code {SAB:'HGNC'})-[:PT]-(term:Term)
@@ -68,8 +73,8 @@ RETURN *
 LIMIT 1
 ```
 
-#### 4. Ontologies/datasets are connected to one another through Concept-Concept relationships, so you must query the concept space
-Return an HGNC to GO path (code)-(concept)-(concept)-(code)
+#### 4. Ontologies/datasets are connected to one another through Concept-Concept relationships, so you must query the concept space to find these relationships.
+Return an `HGNC` to `GO` path (code)-(concept)-(concept)-(code)
 ```cypher
 MATCH (code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[r]-(concept2:Concept)-[:CODE]-(code2:Code {SAB:'GO'})
 RETURN * 
@@ -77,17 +82,23 @@ LIMIT 1
 ```
 
 
-#### 5. Another way to query relationships between 2 ontologies/datasets without necessarily including the Code nodes on either end of the query is to know the SAB and/or TYPE of relationship 
+#### 5. Another way to query relationships between 2 ontologies/datasets without necessarily including the Code nodes on either end of the query is to know the SAB and/or TYPE of relationship. It's important to realize that while every Code has an SAB that identifies what ontology/dataset it belongs to, relationships in the graph also have SABs.
 
+In this example, the `type` of relationship is `process_involves_gene` and the SAB is `NCI`
 ```cypher
 MATCH (code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[r:process_involves_gene {SAB:'NCI'}]-(concept2:Concept)-[:CODE]-(code2:Code {SAB:'GO'})
 RETURN * 
 LIMIT 1
 ```
 
+It can be helpful to return the `type` and `SAB` of the relationship between Concepts of interest. You can easily do this by returning them in a table. For example, if you want to find all the unique relationship `type`'s and `SAB`'s between the `HGNC` and `GO` datasets you can write something like this:
 
+```cypher
+MATCH (code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[r]-(concept2:Concept)-[:CODE]-(code2:Code {SAB:'GO'})
+RETURN DISTINCT code.SAB, type(r), r.SAB, code2.SAB
+```
 #### 6. How can I find out what relationships exist between my ontology/dataset and other ontologies/datasets
-Find datasets that have relationships to HGNC genes and return properties in a table.
+Find datasets that have relationships to `HGNC` genes and return properties in a table.
 ```cypher
 MATCH (code:Code {SAB:'HGNC'})-[:CODE]-(concept:Concept)-[r]-(concept2:Concept)-[:CODE]-(code2:Code)
 RETURN DISTINCT code.SAB AS hgnc_start_code, type(r) AS edge_TYPE, r.SAB AS edge_SAB,  code2.SAB AS SAB_end_code
@@ -104,37 +115,26 @@ LIMIT 10
 
 
 
----------------------------
-Return MOTORPAC to ENSEMBL path
-```cypher
-MATCH (mp_cui:Concept)-[:CODE]->(mp_code:Code {SAB:'MOTORPAC'}) 
-MATCH (mp_cui)-[:associated_with {SAB:'MOTORPAC'}]-(ensRat_cui:Concept)-[:CODE]->(ensRat_code:Code {SAB:'ENSEMBL'})
-RETURN *
-LIMIT 1
-```
 
 
 
-## Simple Optimization techniques
+## Some examples of DCC specific queries
 
-#### If you're worried about the speed of a query it's a good idea to include as much information as you can and to be as specific as possible.
-For example, including the Concept-to-Concept relationship types as well as the Code SAB types will speed up the query significantly.
-
-
-
-## DCC specific queries
 
 
 
 ### 4D Nucleome (4DN)	
 
+
 ### Extracellular RNA Communication Program (ERCC)	RBP	 Regulatory Element	
+
 
 ### GlyGen	
 
+
 ### Genotype Tissue Expression (GTEx)	
 
-Show the GTEXEXP node and its three edges to an HGNC node, an UBERON node and an EXPBINS node. The EXPBINS node is where the TPM value from GTEx is located (on the upperbound and lowerbound properties).
+Show the `GTEXEXP` node and its three edges to an `HGNC` node, an `UBERON` node and an `EXPBINS` node. The `EXPBINS` node is where the median TPM value from GTEx is located (on the upperbound and lowerbound properties).
 ```cypher
 MATCH (gtex_cui:Concept)-[r0:CODE]-(gtex_exp_code:Code {SAB:'GTEXEXP'}) 
 MATCH (gtex_cui)-[r1:expressed_in]-(hgnc_concept:Concept)-[r2:CODE]-(hgnc_code:Code {SAB:'HGNC'})
@@ -143,7 +143,7 @@ MATCH (gtex_cui)-[r5:has_expression]-(expbin_concept:Concept)-[r6:CODE]-(expbin_
 RETURN * LIMIT 1
 ```
 
-Show the GTEXEQTL node and its three edges to an HGNC node, an UBERON node and a PVALUEBINS node. The PVALUEBINS node is where the p-value for the eQTL is located (on the upperbound and lowerbound properties).
+Show the `GTEXEQTL` node and its three edges to an `HGNC` node, an `UBERON` node and a `PVALUEBINS` node. The `PVALUEBINS` node is where the p-value for the eQTL is located (on the upperbound and lowerbound properties).
 ```cypher
 MATCH (gtex_cui:Concept)-[r0:CODE]-(gtex_exp_code:Code {SAB:'GTEXEQTL'}) 
 MATCH (gtex_cui)-[r1]-(hgnc_concept:Concept)-[r2:CODE]-(hgnc_code:Code {SAB:'HGNC'})
@@ -157,17 +157,21 @@ RETURN * LIMIT 1
 
 ### Illuminating the Druggable Genome (IDG)	
 
-Show the IDGP mapping between PUBCHEM and UNIPROTKB
+Show the `IDGP` (IDG-protein) mapping between `PUBCHEM` and `UNIPROTKB`
 ```cypher 
 MATCH (pubchem_code:Code {SAB:'PUBCHEM'})-[:CODE]-(pubchem_cui:Concept)-[:bioactivity {SAB:'IDGP'}]-(uniprot_cui:Concept)-[:CODE]-(uniprot_code:Code {SAB:"UNIPROTKB"})
 RETURN * LIMIT 1
 ```
 
-Show the IDGD mapping between PUBCHEM and SNOMEDUS_CT
+Show the `IDGD` (IDG-disease) mapping between `PUBCHEM` and `SNOMEDUS_CT`:
+```cypher
+MATCH (pubchem_code:Code {SAB:'PUBCHEM'})-[:CODE]-(pubchem_cui:Concept)-[:indication {SAB:'IDGD'}]-(snomed_cui:Concept)-[:CODE]-(snomed_code:Code {SAB:"SNOMEDCT_US"})
+RETURN * LIMIT 1
+```
 
 ### Gabriella Miller Kids First (GMKF)	
 
-// Show the `belongs_to_cohort` relationship between a Kids First Patient node (KFPT) and a Kids First Cohort node (KFCOHORT).
+// Show the `belongs_to_cohort` relationship between a `KFPT` node (Kids First Patient) and a `KFCOHORT` (Kids First Cohort) node:
 ```cypher
 MATCH (kf_pt_code:Code {SAB:'KFPT'})-[:CODE]-(kf_pt_cui)-[:belongs_to_cohort]-(kf_cohort_cui:Concept)-[:CODE]-(kf_cohort_code:Code {SAB:'KFCOHORT'})
 RETURN * LIMIT 1
@@ -175,7 +179,7 @@ RETURN * LIMIT 1
 
 ### The Library of Integrated Network-Based Cellular Signatures (LINCS)	
 
-Show the LINCS edge which maps HGNC nodes to PUBCHEM nodes. There is also a `negatively_regulated_by` relationship 
+Show the `LINCS` edge which maps `HGNC` nodes to `PUBCHEM` nodes (there is also a `negatively_regulated_by` relationship): 
 ```cypher
 MATCH (hgnc_cui:Concept)-[:CODE]->(hgnc_code:Code {SAB:'HGNC'})-[]->(hgnc_term:Term)
 MATCH (hgnc_cui)-[:positively_regulated_by {SAB:'LINCS'}]-(pubchem_cui:Concept)-[:CODE]-(pubchem_code:Code {SAB:'PUBCHEM'})
@@ -192,7 +196,7 @@ RETURN * LIMIT 1
 
 ### Metabolomics Workbench (MW)	
 
-Show the Metabolics Workbench mapping between an HGNC node an a PUBCHEM node
+Show the Metabolics Workbench mapping between an HGNC node an a PUBCHEM node:
 ```cypher
 MATCH (hgnc_code:Code {SAB:"HGNC"})-[:CODE]-(hgnc_concept:Concept)-[r3:causally_influences {SAB:"MW"}]->(pubchem_concept:Concept)-[:CODE]-(pubchem_code:Code)
 RETURN * LIMIT 1
@@ -205,7 +209,7 @@ RETURN * LIMIT 1
 
 
 
-Additional Datasets	
+SABs of Additional Datasets	
 CLINVAR	
 CMAP
 HPOMP
