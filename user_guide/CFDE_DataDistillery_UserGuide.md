@@ -7,7 +7,7 @@
 
 
 ### The simplest way to find a Code in the graph is to search for it using it's source abbreviation (SAB).
-For a list of all Data Distillery SABs see [here](https://ubkg.docs.xconsortia.org/contexts/#data-distillery-context)
+For a list of all Data Distillery SABs see [here](https://ubkg.docs.xconsortia.org/contexts/#data-distillery-context).
 #### 1. How can I return a Code node from a specific ontology/dataset, for example an HGNC Code?
 Specify the `HGNC` as the SAB property:
 ```cypher
