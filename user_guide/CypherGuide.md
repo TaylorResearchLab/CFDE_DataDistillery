@@ -1,4 +1,4 @@
-# <ins>Guide for exploring the Data Distillery knowledge graph using Cypher</ins>
+# Guide for exploring the Data Distillery knowledge graph using Cypher
 
 * This guide is meant to be an introduction for how to write queries to explore the Data Distillery Knowledge graph. A basic understanding of Cypher is assumed. If you are unfamiliar with Cypher please refer to the [Neo4j docs](https://neo4j.com/developer/cypher/). 
 * For documentation concerning how the Data Distillery knowledge graph is generated or for information about the general schema of the graph please see our [github docs page](https://ubkg.docs.xconsortia.org). For documentation concerning the specific schema for a DCCs dataset please see our [Data Dictionary](https://docs.google.com/document/d/1ubKqkQb40rC7jKRxY9z-SxtsdKqRNZg3Nvds8SpTIbM/edit).
@@ -7,7 +7,7 @@
 
 
 ### The simplest way to find a Code in the graph is to search for it using it's source abbreviation (SAB).
-
+For a list of all Data Distillery SABs see [here](https://ubkg.docs.xconsortia.org/contexts/#data-distillery-context)
 #### 1. How can I return a Code node from a specific ontology/dataset, for example an HGNC Code?
 Specify the `HGNC` as the SAB property:
 ```cypher
@@ -287,18 +287,6 @@ RETURN * LIMIT 1
 ```
 
 
-
-
-#### SABs of Additional Datasets	
-* CLINVAR	
-* CMAP
-* HPOMP
-* HGNCHPO	
-* HCOPHGNC
-* HCOPMP
-* MSIGDB
-* HSCLO
-* RATHCOP
 
 
 
