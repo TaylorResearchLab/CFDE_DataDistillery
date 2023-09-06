@@ -226,7 +226,8 @@ RETURN DISTINCT a.CodeID AS cCRE,p.CodeID AS Gene
 ### <ins>GlyGen</ins>
 
 PROTEOFORM 
-```MATCH (glycan_code:Code {SAB:'GLYTOUCAN'})<-[:CODE]-(glycan_concept:Concept)<-[r1:has_saccharide {SAB:'PROTEOFORM'}]-(site_concept:Concept)-[:CODE]->(site_code:Code {SAB:'GLYCOSYLATION.SITE'}),//Saccaride and glycosylation site
+```cypher
+MATCH (glycan_code:Code {SAB:'GLYTOUCAN'})<-[:CODE]-(glycan_concept:Concept)<-[r1:has_saccharide {SAB:'PROTEOFORM'}]-(site_concept:Concept)-[:CODE]->(site_code:Code {SAB:'GLYCOSYLATION.SITE'}),//Saccaride and glycosylation site
 (site_concept:Concept)-[r2:location {SAB:'PROTEOFORM'}]->(location_concept:Concept)-[:CODE]->(location_code:Code {SAB:'GLYGEN.LOCATION'})-[:PROTEOFORM_PT]->(location_term:Term),//Location
 (location_concept:Concept)-[r3:has_amino_acid {SAB:'PROTEOFORM'}]->(amino_acid_concept:Concept)-[:CODE]->(amino_acid_code:Code {SAB:'AMINO.ACID'}),//Amino acid
 (site_concept:Concept)<-[r4:glycosylated_at {SAB:'PROTEOFORM'}]-(glycoprotein_concept:Concept)-[:CODE]->(glycoprotein_code:Code {SAB:'GLYCOPROTEIN'}),//Glycoprotein
@@ -236,7 +237,8 @@ PROTEOFORM
 RETURN * LIMIT 1
 ```
 GLYCANS 
-```MATCH (glycan_code:Code {SAB:'GLYTOUCAN'})<-[:CODE]-(glycan_concept:Concept)-[r1:synthesized_by {SAB:'GLYCANS'}]->(glycosylation_concept:Concept)-[:CODE]->(glycosylation_code:Code {SAB:'GLYCOSYLTRANSFERASE.REACTION'}),//Glycans and glycosyltransferase reactions
+```cypher
+MATCH (glycan_code:Code {SAB:'GLYTOUCAN'})<-[:CODE]-(glycan_concept:Concept)-[r1:synthesized_by {SAB:'GLYCANS'}]->(glycosylation_concept:Concept)-[:CODE]->(glycosylation_code:Code {SAB:'GLYCOSYLTRANSFERASE.REACTION'}),//Glycans and glycosyltransferase reactions
 (glycan_concept:Concept)-[r2:has_canonical_residue {SAB:'GLYCANS'}]->(residue_concept:Concept)-[:CODE]->(residue_code:Code {SAB:'GLYGEN.RESIDUE'}),//Residues
 (glycan_concept:Concept)-[r3:has_motif {SAB:'GLYCANS'}]->(motif_concept:Concept)-[:CODE]->(motif_code:Code {SAB:'GLYCAN.MOTIF'}),//Motifs
 (glycan_concept:Concept)-[r4:has_glycosequence {SAB:'GLYCANS'}]->(glycosequence_concept:Concept)-[:CODE]->(glycosequence_code:Code {SAB:'GLYGEN.GLYCOSEQUENCE'})-[:GLYCANS_PT]->(glycosequence_term:Term),//Glycosequence
