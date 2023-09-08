@@ -148,10 +148,35 @@ WITH * MATCH (compound_concept:Concept)-[:PREF_TERM]-(compound:Term),
 (gene_concept:Concept)-[:PREF_TERM]-(gene:Term),
 (condition_concept:Concept)-[:PREF_TERM]-(condition:Term),
 (metabolite_concept:Concept)-[:PREF_TERM]-(metabolite:Term),
-(tissue_concept:Concept)-[:PREF_TERM]-(tissue:Term) RETURN DISTINCT compound.name,protein.name,gene.name,metabolite.name,tissue.name,condition.name LIMIT 10
+(tissue_concept:Concept)-[:PREF_TERM]-(tissue:Term) RETURN DISTINCT compound.name,protein.name,gene.name,metabolite.name,tissue.name,condition.name LIMIT 20
 ```
-### <ins>GTEx</ins>
-`insert`
+### <ins>MOTRPAC, LINCS and GTEx</ins>
+
+MoTrPAC Genes affected by exercise, are expressed in matched tissues in humans in GTEx, that are either matches or inverse matches of a perturbation signal in LINCS = compounds or perturbations that might promote or interfere with exercise benefit
+Graphical Reprentation 
+```cypher
+MATCH (motrpac_code:Code {SAB:"MOTRPAC"})<-[:CODE]-(motrpac_concept:Concept)-[r1:associated_with]->(rat_gene_concept:Concept)-[r2:has_human_ortholog]->(hgnc_concept:Concept)<-[r3 {SAB:"LINCS"}]-(perturbagen_concept:Concept),
+(motrpac_concept:Concept)-[r4:located_in]->(tissue_concept_1:Concept)-[r5:part_of]-(tissue_concept_2:Concept)-[r6:expresses {SAB:"GTEXEXP"}]->(gtex_concept:Concept)-[r7:expressed_in {SAB:"GTEXEXP"}]-(hgnc_concept:Concept),
+(gtex_concept:Concept)-[r8:has_expression {SAB:"GTEXEXP"}]->(expr_concept:Concept)-[:CODE]->(expr_code:Code),
+(hgnc_concept:Concept)-[:PREF_TERM]->(hgnc_term:Term),
+(perturbagen_concept:Concept)-[:PREF_TERM]->(perturbagen_term:Term),
+(tissue_concept_1:Concept)-[:PREF_TERM]->(tissue_term_1:Term),
+(tissue_concept_2:Concept)-[:PREF_TERM]->(tissue_term_2:Term),
+(rat_gene_concept:Concept)-[:CODE]->(rat_gene_code:Code)
+RETURN * LIMIT 1
+```
+Tabular Output
+```cypher
+MATCH (motrpac_code:Code {SAB:"MOTRPAC"})<-[:CODE]-(motrpac_concept:Concept)-[r1:associated_with]->(rat_gene_concept:Concept)-[r2:has_human_ortholog]->(hgnc_concept:Concept)<-[r3 {SAB:"LINCS"}]-(perturbagen_concept:Concept),
+(motrpac_concept:Concept)-[r4:located_in]->(tissue_concept_1:Concept)-[r5:part_of]-(tissue_concept_2:Concept)-[r6:expresses {SAB:"GTEXEXP"}]->(gtex_concept:Concept)-[r7:expressed_in {SAB:"GTEXEXP"}]-(hgnc_concept:Concept),
+(gtex_concept:Concept)-[r8:has_expression {SAB:"GTEXEXP"}]->(expr_concept:Concept)-[:CODE]->(expr_code:Code),
+(hgnc_concept:Concept)-[:PREF_TERM]->(hgnc_term:Term),
+(perturbagen_concept:Concept)-[:PREF_TERM]->(perturbagen_term:Term),
+(tissue_concept_1:Concept)-[:PREF_TERM]->(tissue_term_1:Term),
+(tissue_concept_2:Concept)-[:PREF_TERM]->(tissue_term_2:Term),
+(rat_gene_concept:Concept)-[:CODE]->(rat_gene_code:Code)
+RETURN DISTINCT motrpac_code.CODE AS MoTrPac_DS, rat_gene_code.CODE AS rat_gene, hgnc_term.name AS human_gene,tissue_term_1.name AS tissue_MoTrPac, tissue_term_2.name AS tissue_GTEx, expr_code.CODE AS TPM,perturbagen_term.name AS perturbagen,type(r3) AS effect_direction LIMIT 20
+```
 
 ### <ins>GlyGen</ins>
 `insert`
