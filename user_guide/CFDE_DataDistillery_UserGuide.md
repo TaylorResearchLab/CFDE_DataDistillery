@@ -349,7 +349,7 @@ RETURN * LIMIT 1
 
 Show the Metabolics Workbench mapping between an HGNC node an a PUBCHEM node:
 ```cypher
-MATCH (hgnc_code:Code {SAB:"HGNC"})-[:CODE]-(hgnc_concept:Concept)-[r3:causally_influences {SAB:"MW"}]->(pubchem_concept:Concept)-[:CODE]-(pubchem_code:Code)
+MATCH (gene_code:Code {SAB:"HGNC"})<-[:CODE]-(gene_concept:Concept)-[r1:causally_influences {SAB:"MW"}]->(metabolite_concept:Concept)-[r2:correlated_with_condition {SAB:"MW"}]->(condition_concept:Concept)-[]->(tissue_concept:Concept)<-[r3:produced_by {SAB:"MW"}]-(metabolite_concept:Concept)
 RETURN * LIMIT 1
 ```
 
