@@ -347,7 +347,7 @@ RETURN * LIMIT 1
 
 ### <ins>Metabolomics Workbench (MW)</ins>
 
-Show the Metabolics Workbench mapping between an HGNC node an a PUBCHEM node:
+Show the Metabolics Workbench mapping between an HGNC node an a PUBCHEM node on one hand through `causally_influences` relationship on one hand and correlations between that metabolite and a human condition and the associated tissue that the metabolite is `produced_by`:
 ```cypher
 MATCH (gene_code:Code {SAB:"HGNC"})<-[:CODE]-(gene_concept:Concept)-[r1:causally_influences {SAB:"MW"}]->(metabolite_concept:Concept)-[r2:correlated_with_condition {SAB:"MW"}]->(condition_concept:Concept)-[]->(tissue_concept:Concept)<-[r3:produced_by {SAB:"MW"}]-(metabolite_concept:Concept)
 RETURN * LIMIT 1
