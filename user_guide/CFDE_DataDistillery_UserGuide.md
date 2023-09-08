@@ -256,7 +256,7 @@ RETURN * LIMIT 1
 
 ### <ins>GlyGen</ins>
 
-PROTEOFORM Query
+PROTEOFORM query: the following query extracts the `GLYGEN`-defied relationships between glycans (SAB:`GLYTOUCAN`) and the glycoprotein complex information including the protein, isoform, glycosylation site (location and amino-acid) and the evidence for such a pattern.
 ```cypher
 MATCH (glycan_code:Code {SAB:'GLYTOUCAN'})<-[:CODE]-(glycan_concept:Concept)<-[r1:has_saccharide {SAB:'PROTEOFORM'}]-(site_concept:Concept)-[:CODE]->(site_code:Code {SAB:'GLYCOSYLATION.SITE'}),//Saccaride and glycosylation site
 (site_concept:Concept)-[r2:location {SAB:'PROTEOFORM'}]->(location_concept:Concept)-[:CODE]->(location_code:Code {SAB:'GLYGEN.LOCATION'})-[:PROTEOFORM_PT]->(location_term:Term),//Location
