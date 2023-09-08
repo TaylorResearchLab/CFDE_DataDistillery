@@ -123,8 +123,33 @@ LIMIT 10
 # DCC Use Cases
 
 
-### <ins>IDG</ins>
-`insert`
+### <ins>IDG and Metabolomics Workbench (MW)</ins>
+
+For a disease (condition) in Metabolomics Workbench data find all IDG and GTEx data that may be related by disease and tissue type
+For example, if a study would like to propose biomarkers (MW) associated with the use of a certain drug (IDG) in association with a medical condition.
+Query description: intersection of MW and IDG; compounds that regulate products of genes (IDG) that causally influence metabolites correlated with conditions (MW), with tissues and conditions directly connected through a single relationship (e.g. DOID).
+Disease-tissue relationships are used as a filter to obtain metabolite-tissue-condition triangles that are affected by a certain compound through gene product perturbations.
+
+Graphical Reprentation 
+```cypher
+MATCH (compound_concept:Concept)-[r1:bioactivity {SAB:"IDGP"}]->(protein_concept:Concept)-[r2:gene_product_of {SAB:"UNIPROTKB"}]->(gene_concept:Concept)-[r3:causally_influences {SAB:"MW"}]->(metabolite_concept:Concept)-[r4:correlated_with_condition {SAB:"MW"}]->(condition_concept:Concept)-[]->(tissue_concept:Concept)<-[r5:produced_by {SAB:"MW"}]-(metabolite_concept:Concept) with *
+match (compound_concept:Concept)-[:PREF_TERM]-(compound:Term),
+(protein_concept:Concept)-[:PREF_TERM]-(protein:Term),
+(gene_concept:Concept)-[:PREF_TERM]-(gene:Term),
+(condition_concept:Concept)-[:PREF_TERM]-(condition:Term),
+(metabolite_concept:Concept)-[:PREF_TERM]-(metabolite:Term),
+(tissue_concept:Concept)-[:PREF_TERM]-(tissue:Term) RETURN DISTINCT * LIMIT 1
+```
+Tabular Output
+```cypher
+MATCH (compound_concept:Concept)-[r1:bioactivity {SAB:"IDGP"}]->(protein_concept:Concept)-[r2:gene_product_of {SAB:"UNIPROTKB"}]->(gene_concept:Concept)-[r3:causally_influences {SAB:"MW"}]->(metabolite_concept:Concept)-[r4:correlated_with_condition {SAB:"MW"}]->(condition_concept:Concept)-[]->(tissue_concept:Concept)<-[r5:produced_by {SAB:"MW"}]-(metabolite_concept:Concept) with *
+match (compound_concept:Concept)-[:PREF_TERM]-(compound:Term),
+(protein_concept:Concept)-[:PREF_TERM]-(protein:Term),
+(gene_concept:Concept)-[:PREF_TERM]-(gene:Term),
+(condition_concept:Concept)-[:PREF_TERM]-(condition:Term),
+(metabolite_concept:Concept)-[:PREF_TERM]-(metabolite:Term),
+(tissue_concept:Concept)-[:PREF_TERM]-(tissue:Term) RETURN DISTINCT compound.name,protein.name,gene.name,metabolite.name,tissue.name,condition.name LIMIT 10
+```
 ### <ins>GTEx</ins>
 `insert`
 
