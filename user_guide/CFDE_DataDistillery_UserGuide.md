@@ -8,6 +8,8 @@
 
 [Jump to Queries to reproduce Data Dictionary figures](https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/user_guide/CFDE_DataDistillery_UserGuide.md#queries-to-reproduce-the-figures-in-the-data-dictionary)
 
+[Jump to Tips and Tricks]()
+
 --------
 ### The simplest way to find a Code in the graph is to search for it using it's source abbreviation (SAB).
 For a list of all Data Distillery SABs see [here](https://ubkg.docs.xconsortia.org/contexts/#data-distillery-context).
@@ -354,7 +356,7 @@ RETURN * LIMIT 1
 ```
 
 
-
+# Tips and Tricks
 
 
 
