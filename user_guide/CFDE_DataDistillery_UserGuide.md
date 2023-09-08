@@ -141,6 +141,7 @@ WITH * MATCH (compound_concept:Concept)-[:PREF_TERM]-(compound:Term),
 (tissue_concept:Concept)-[:PREF_TERM]-(tissue:Term) RETURN DISTINCT * LIMIT 1
 ```
 <img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/IDG_MW.png" width="800" height="500">
+
 Tabular Output
 ```cypher
 MATCH (compound_concept:Concept)-[r1:bioactivity {SAB:"IDGP"}]->(protein_concept:Concept)-[r2:gene_product_of {SAB:"UNIPROTKB"}]->(gene_concept:Concept)-[r3:causally_influences {SAB:"MW"}]->(metabolite_concept:Concept)-[r4:correlated_with_condition {SAB:"MW"}]->(condition_concept:Concept)-[]->(tissue_concept:Concept)<-[r5:produced_by {SAB:"MW"}]-(metabolite_concept:Concept) 
@@ -167,6 +168,7 @@ MATCH (motrpac_code:Code {SAB:"MOTRPAC"})<-[:CODE]-(motrpac_concept:Concept)-[r1
 RETURN * LIMIT 1
 ```
 <img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/MOTRPAC_LINCS_GTEX.png" width="700" height="580">
+
 Tabular Output
 ```cypher
 MATCH (motrpac_code:Code {SAB:"MOTRPAC"})<-[:CODE]-(motrpac_concept:Concept)-[r1:associated_with]->(rat_gene_concept:Concept)-[r2:has_human_ortholog]->(hgnc_concept:Concept)<-[r3 {SAB:"LINCS"}]-(perturbagen_concept:Concept),
