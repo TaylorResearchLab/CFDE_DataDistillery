@@ -125,8 +125,13 @@ LIMIT 10
 `insert`
 ### <ins>GTEx</ins>
 `insert`
+
+### <ins>GlyGen</ins>
+`insert`
+
 ### <ins>ERCC</ins>
-#### RBP	 	
+
+##### RBP	 	
 
 Query1:
 ```cypher
@@ -172,7 +177,7 @@ MATCH (p)<-[:correlated_in]-(r)-[:overlaps]->(:Concept)-[:CODE]->(b)
 RETURN DISTINCT c.CodeID AS RBP,s.CodeID AS RBS,b.CodeID AS Gene,a.CodeID AS Biosample;
 ```
 
-#### Regulatory Element
+##### Regulatory Element
 
 Query1:
 ```cypher
@@ -212,6 +217,9 @@ RETURN DISTINCT a.CodeID AS cCRE,p.CodeID AS Gene
 ### <ins>MoTrPAC</ins>
 
 ### <ins></ins>
+
+
+
 
 
 # Queries to reproduce the figures in the [Data Dictionary](https://docs.google.com/document/d/1ubKqkQb40rC7jKRxY9z-SxtsdKqRNZg3Nvds8SpTIbM/edit)
