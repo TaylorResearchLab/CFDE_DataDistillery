@@ -227,7 +227,7 @@ RETURN DISTINCT a.CodeID AS cCRE,p.CodeID AS Gene
 # Queries to reproduce the figures in the [Data Dictionary](https://docs.google.com/document/d/1ubKqkQb40rC7jKRxY9z-SxtsdKqRNZg3Nvds8SpTIbM/edit)
 
 ### <ins>4D Nucleome (4DN)</ins>
-The following query extracts the `4DN` loop anchor-associated nodes in `HSCLO` (`r1` through `r4`). `r5` find the donut q-value associated with the loop where `r6` and `r7` retrieve the file and dataset containing a specific loop. `r8` finds which cell type has been used in the Hi-C experiment by 4DN.
+The following query extracts the `4DN` loop anchor-associated nodes in `HSCLO` (`r1` through `r4`). `r5` find the donut q-value associated with the loop where `r6` and `r7` retrieve the file and dataset containing a specific loop. `r8` finds which cell type has been used in the Hi-C experiment by `4DN`.
 ```cypher
 MATCH (loop_concept:Concept)-[r1:`4DN_loop_us_start` {SAB:'4DN'}
 ]->(us_start_concept:Concept)-[:CODE]->(us_start_code:Code),//Loop upstream start node in HSCLO
