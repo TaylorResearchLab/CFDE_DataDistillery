@@ -113,45 +113,19 @@ RETURN DISTINCT hgnc_term.name AS gene_name, code.SAB AS hgnc_start_code, type(r
 LIMIT 10
 ```
 
-## DCC Use Cases
 
+
+
+
+
+# DCC Use Cases
+
+
+### <ins>IDG</ins>
+`insert`
+### <ins>GTEx</ins>
+`insert`
 ### <ins>ERCC</ins>
-
-### <ins>MoTrPAC</ins>
-
-### <ins></ins>
-### <ins></ins>
-### <ins></ins>
-
-
-## Queries to reproduce the figures in the [Data Dictionary](https://docs.google.com/document/d/1ubKqkQb40rC7jKRxY9z-SxtsdKqRNZg3Nvds8SpTIbM/edit)
-
-### <ins>4D Nucleome (4DN)</ins>
-4DN Query
-```cypher
-MATCH (loop_concept:Concept)-[r1:`4DN_loop_us_start` {SAB:'4DN'}
-]->(us_start_concept:Concept)-[:CODE]->(us_start_code:Code),//Loop upstream start node in HSCLO
-(loop_concept:Concept)-[r2:`4DN_loop_us_end` {SAB:'4DN'}
-]->(us_end_concept:Concept)-[:CODE]->(us_end_code:Code),//Loop upstream end node in HSCLO
-(loop_concept:Concept)-[r3:`4DN_loop_ds_start` {SAB:'4DN'}
-]->(ds_start_concept:Concept)-[:CODE]->(ds_start_code:Code),//Loop downstream start node in HSCLO
-(loop_concept:Concept)-[r4:`4DN_loop_ds_end` {SAB:'4DN'}
-]->(ds_end_concept:Concept)-[:CODE]->(ds_end_code:Code),//Loop downstream end node in HSCLO
-(loop_code:Code {SAB:'4DNL'})<-[:CODE]-(loop_concept:Concept)-[r5:`4DN_loop_has_qvalue_bin` {SAB:'4DN'}
-]->(qvalue_bin_concept:Concept)-[:CODE]->(qvalue_bin_code:Code {SAB:'4DNQ'}
-),//Loop q-value bin
-(file_code:Code {SAB:'4DNF'})<-[:CODE]-(file_concept:Concept)-[r6:`4DN_file_has_loop` {SAB:'4DN'}
-]->(loop_concept:Concept),//File containing the loop
-(dataset_code:Code {SAB:'4DND'}
-)<-[:CODE]-(dataset_concept:Concept)-[r7:`4DN_dataset_has_file` {SAB:'4DN'}
-]->(file_concept:Concept),//Dataset containing the file
-(dataset_concept:Concept)-[r8:`4DN_dataset_involves_cell_type` {SAB:'4DN'}
-]->(cell_type_concept:Concept)-[:PREF_TERM]->(cell_type_term:Term )//Cell type used in the experiment
-RETURN * LIMIT 1
-```
-
-### <ins>Extracellular RNA Communication Program (ERCC)</ins>
-
 #### RBP	 	
 
 Query1:
@@ -235,6 +209,40 @@ MATCH (a)<-[:CODE]-(:Concept)-[:part_of]->(:Concept)-[:regulates]->(:Concept)-[:
 RETURN DISTINCT a.CodeID AS cCRE,p.CodeID AS Gene
 ```
 
+### <ins>MoTrPAC</ins>
+
+### <ins></ins>
+
+
+# Queries to reproduce the figures in the [Data Dictionary](https://docs.google.com/document/d/1ubKqkQb40rC7jKRxY9z-SxtsdKqRNZg3Nvds8SpTIbM/edit)
+
+### <ins>4D Nucleome (4DN)</ins>
+4DN Query
+```cypher
+MATCH (loop_concept:Concept)-[r1:`4DN_loop_us_start` {SAB:'4DN'}
+]->(us_start_concept:Concept)-[:CODE]->(us_start_code:Code),//Loop upstream start node in HSCLO
+(loop_concept:Concept)-[r2:`4DN_loop_us_end` {SAB:'4DN'}
+]->(us_end_concept:Concept)-[:CODE]->(us_end_code:Code),//Loop upstream end node in HSCLO
+(loop_concept:Concept)-[r3:`4DN_loop_ds_start` {SAB:'4DN'}
+]->(ds_start_concept:Concept)-[:CODE]->(ds_start_code:Code),//Loop downstream start node in HSCLO
+(loop_concept:Concept)-[r4:`4DN_loop_ds_end` {SAB:'4DN'}
+]->(ds_end_concept:Concept)-[:CODE]->(ds_end_code:Code),//Loop downstream end node in HSCLO
+(loop_code:Code {SAB:'4DNL'})<-[:CODE]-(loop_concept:Concept)-[r5:`4DN_loop_has_qvalue_bin` {SAB:'4DN'}
+]->(qvalue_bin_concept:Concept)-[:CODE]->(qvalue_bin_code:Code {SAB:'4DNQ'}
+),//Loop q-value bin
+(file_code:Code {SAB:'4DNF'})<-[:CODE]-(file_concept:Concept)-[r6:`4DN_file_has_loop` {SAB:'4DN'}
+]->(loop_concept:Concept),//File containing the loop
+(dataset_code:Code {SAB:'4DND'}
+)<-[:CODE]-(dataset_concept:Concept)-[r7:`4DN_dataset_has_file` {SAB:'4DN'}
+]->(file_concept:Concept),//Dataset containing the file
+(dataset_concept:Concept)-[r8:`4DN_dataset_involves_cell_type` {SAB:'4DN'}
+]->(cell_type_concept:Concept)-[:PREF_TERM]->(cell_type_term:Term )//Cell type used in the experiment
+RETURN * LIMIT 1
+```
+
+### <ins>Extracellular RNA Communication Program (ERCC)</ins>
+
+`Need schema query here!`
 
 ### <ins>GlyGen</ins>
 
