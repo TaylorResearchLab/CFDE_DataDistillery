@@ -301,7 +301,7 @@ MATCH (loop_concept:Concept)-[r1:`4DN_loop_us_start` {SAB:'4DN'}
 ]->(cell_type_concept:Concept)-[:PREF_TERM]->(cell_type_term:Term )//Cell type used in the experiment
 RETURN * LIMIT 1
 ```
-<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/4DN.png" width="800" height="500">
+<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/4DN.png" width="600" height="450">
 ### <ins>Extracellular RNA Communication Program (ERCC)</ins>
 
 `Need schema query here!`
@@ -319,7 +319,7 @@ MATCH (glycan_code:Code {SAB:'GLYTOUCAN'})<-[:CODE]-(glycan_concept:Concept)<-[r
 (glycoprotein_concept:Concept)-[r7:has_evidence {SAB:'PROTEOFORM'}]->(evidence_concept:Concept)-[:CODE]->(evidence_code:Code {SAB:'GLYCOPROTEIN.EVIDENCE'})//Evidence
 RETURN * LIMIT 1
 ```
-<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/PROTEOFORM.png" width="800" height="500">
+<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/PROTEOFORM.png" width="900" height="500">
 GLYCANS query: the following query extracts the `GLYGEN`-defined relationships between glycans (SAB:`GLYTOUCAN`) and the asscoiated residues, motifs, glycoreactions, glycoenzymes, glycosequences and source:
 ```cypher
 MATCH (glycan_code:Code {SAB:'GLYTOUCAN'})<-[:CODE]-(glycan_concept:Concept)-[r1:synthesized_by {SAB:'GLYCANS'}]->(glycosylation_concept:Concept)-[:CODE]->(glycosylation_code:Code {SAB:'GLYCOSYLTRANSFERASE.REACTION'}),//Glycans and glycosyltransferase reactions
@@ -331,7 +331,7 @@ MATCH (glycan_code:Code {SAB:'GLYTOUCAN'})<-[:CODE]-(glycan_concept:Concept)-[r1
 (glycan_concept:Concept)-[r7:is_from_source {SAB:'GLYCANS'}]->(source_concept:Concept)-[:CODE]->(source_code:Code {SAB:'GLYGEN.SRC'})//Glygen source
 RETURN * LIMIT 1
 ```
-<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/GLYCANS.png" width="800" height="500">
+<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/GLYCANS.png" width="750" height="550">
 ### <ins>Genotype Tissue Expression (GTEx)</ins>	
 
 Show the `GTEXEXP` node and its three edges to an `HGNC` node, an `UBERON` node and an `EXPBINS` node. The `EXPBINS` node is where the median TPM value from GTEx is located (on the upperbound and lowerbound properties).
