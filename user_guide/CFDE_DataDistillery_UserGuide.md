@@ -165,7 +165,7 @@ MATCH (motrpac_code:Code {SAB:"MOTRPAC"})<-[:CODE]-(motrpac_concept:Concept)-[r1
 (rat_gene_concept:Concept)-[:CODE]->(rat_gene_code:Code)
 RETURN * LIMIT 1
 ```
-<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/MOTRPAC_LINCS_GTEX.jpg" width="900" height="500">
+<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/MOTRPAC_LINCS_GTEX.jpg" width="900" height="750">
 Tabular Output
 ```cypher
 MATCH (motrpac_code:Code {SAB:"MOTRPAC"})<-[:CODE]-(motrpac_concept:Concept)-[r1:associated_with]->(rat_gene_concept:Concept)-[r2:has_human_ortholog]->(hgnc_concept:Concept)<-[r3 {SAB:"LINCS"}]-(perturbagen_concept:Concept),
