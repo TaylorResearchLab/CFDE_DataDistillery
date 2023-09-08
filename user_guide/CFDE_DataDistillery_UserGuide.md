@@ -41,10 +41,13 @@ All of these are equivalent, although sometimes it can be helpful to use the `WH
 For example, if you know you want to use an `ENCODE` SAB in your query but can't remember the exact spelling you can simply return all SABs starting with 'ENCODE':
 ```cypher
 MATCH (code:Code) WHERE code.SAB STARTS WITH 'ENCODE'
-RETURN DISTINCT code.SAB
+WITH DISTINCT code.SAB AS encode_sabs
+RETURN collect(encode_sabs)
 ```
 
-or if you want to include multiple SABs from a DCC (this will return `GTEXEXP` and `GTEXEQTL`):
+(the above query should return `["ENCODE.CCRE", "ENCODE.CCRE.ACTIVITY", "ENCODE.CCRE.CTCF", "ENCODE.CCRE.H3K27AC", "ENCODE.CCRE.H3K4ME3", "ENCODE.RBS.150.NO.OVERLAP", "ENCODE.RBS.HEPG2", "ENCODE.RBS.HEPG2.K562", "ENCODE.RBS.K562"]`)
+
+...or if you want to include multiple SABs from a DCC (this will return `GTEXEXP` and `GTEXEQTL`):
 ```cypher
 MATCH (code:Code) WHERE code.SAB CONTAINS 'GTEX'
 RETURN DISTINCT code.SAB
