@@ -358,6 +358,8 @@ RETURN * LIMIT 1
 
 # Tips and Tricks
 
+- You might notice that some queries have a `MATCH` statement for every line such as these [GTEx queries] , while other queries have a single `MATCH` statement followed by several patterns seperated by a comma such as the GlyGen queries.  
+
 
 
 
