@@ -332,7 +332,8 @@ MATCH (glycan_code:Code {SAB:'GLYTOUCAN'})<-[:CODE]-(glycan_concept:Concept)-[r1
 RETURN * LIMIT 1
 ```
 <img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/GLYCANS.png" width="750" height="550">
-### <ins>Genotype Tissue Expression (GTEx)</ins>	
+
+### <ins>Genotype Tissue Expression (GTEx)</ins>
 
 Show the `GTEXEXP` node and its three edges to an `HGNC` node, an `UBERON` node and an `EXPBINS` node. The `EXPBINS` node is where the median TPM value from GTEx is located (on the upperbound and lowerbound properties).
 ```cypher
