@@ -358,8 +358,32 @@ RETURN * LIMIT 1
 
 # Tips and Tricks
 
-- You might notice that some queries have a `MATCH` statement for every line such as these [GTEx queries] , while other queries have a single `MATCH` statement followed by several patterns seperated by a comma such as the GlyGen queries.  
+- You might notice that some queries have a `MATCH` statement for every line such as these [GTEx queries](https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/user_guide/CFDE_DataDistillery_UserGuide.md#genotype-tissue-expression-gtex) , while other queries have a single `MATCH` statement followed by several patterns seperated by a comma such as these [GlyGen queries](https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/user_guide/CFDE_DataDistillery_UserGuide.md#glygen-1). Both styles produce identical query plans, they just represent two different syntax styles.
 
+
+- Most of the queries in this tutorial should not take long to run (<10 seconds). But in general, to speed up the run time of a query it can be helpful to start with the smaller dataset or even a single node if possible. For example, if you know you want to search for a specific gene and the phenotypes it is related to, you would first `MATCH` on the gene and then on the relationships to the `HPO` dataset.
+
+Here is an example using Cypher:
+
+This query, where we `MATCH` on the `HGNC` gene of interest first, returns results in ~30ms.
+```cypher
+MATCH (hgnc_code:Code {CODE:'7881'})
+MATCH (hgnc_code)-[:CODE]-(hgnc_cui)-[r]-(hpo_cui:Concept)-[:CODE]-(hpo_code:Code {SAB:'HPO'})
+RETURN DISTINCT hgnc_code.CodeID, hpo_code.CodeID
+```
+
+meanwhile, this query, where we `MATCH` on the `HPO` dataset first, returns results in ~700ms.
+```cypher
+MATCH (hpo_cui)-[:CODE]-(hpo_code:Code {SAB:'HPO'})
+MATCH (hpo_cui)-[r]-(hgnc_cui)-[:CODE]-(hgnc_code:Code {CODE:'7881'})
+RETURN DISTINCT hgnc_code.CodeID, hpo_code.CodeID
+```
+The total run time for both queries is short because `HPO` is a small dataset, but the first query still runs over 20x faster. The speed up will be magnified if you are dealing with some of the larger datasets in the graph such as `GTEx` and `ERCC`.
+
+Also, note that run times will vary from system to system but the relative speed up should be consistent. Additionally, Neo4j performs query caching, so if you are timing your own query run times just know that after you run a query for the first time Neo4j will cache the query and any identical queries submitted afterwards will be checked and (if found) returned much more quickly. This can make finding an 'average' run time of a query misleading. You can read about Neo4j's query caching [here](https://neo4j.com/developer/kb/understanding-the-query-plan-cache/).
+
+
+- 
 
 
 
