@@ -301,7 +301,7 @@ MATCH (loop_concept:Concept)-[r1:`4DN_loop_us_start` {SAB:'4DN'}
 ]->(cell_type_concept:Concept)-[:PREF_TERM]->(cell_type_term:Term )//Cell type used in the experiment
 RETURN * LIMIT 1
 ```
-<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/4DN.png" width="600" height="450">
+<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/4DN.png" width="500" height="450">
 ### <ins>Extracellular RNA Communication Program (ERCC)</ins>
 
 `Need schema query here!`
