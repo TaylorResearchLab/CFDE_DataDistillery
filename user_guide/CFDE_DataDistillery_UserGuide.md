@@ -110,8 +110,18 @@ RETURN DISTINCT hgnc_term.name AS gene_name, code.SAB AS hgnc_start_code, type(r
 LIMIT 10
 ```
 
+## DCC Use Cases
 
-## Some examples of DCC specific queries
+### <ins>ERCC</ins>
+
+### <ins>MoTrPAC</ins>
+
+### <ins></ins>
+### <ins></ins>
+### <ins></ins>
+
+
+## Queries to reproduce the figures in the [Data Dictionary](https://docs.google.com/document/d/1ubKqkQb40rC7jKRxY9z-SxtsdKqRNZg3Nvds8SpTIbM/edit)
 
 ### <ins>4D Nucleome (4DN)</ins>
 4DN Query
@@ -288,7 +298,7 @@ RETURN * LIMIT 1
 
 ### <ins>Gabriella Miller Kids First (GMKF)</ins>
 
-// Show the `belongs_to_cohort` relationship between a `KFPT` node (Kids First Patient) and a `KFCOHORT` (Kids First Cohort) node:
+Show the `belongs_to_cohort` relationship between a `KFPT` node (Kids First Patient) and a `KFCOHORT` (Kids First Cohort) node:
 ```cypher
 MATCH (kf_pt_code:Code {SAB:'KFPT'})-[:CODE]-(kf_pt_cui)-[:belongs_to_cohort]-(kf_cohort_cui:Concept)-[:CODE]-(kf_cohort_code:Code {SAB:'KFCOHORT'})
 RETURN * LIMIT 1
@@ -296,7 +306,7 @@ RETURN * LIMIT 1
 
 ### <ins>The Library of Integrated Network-Based Cellular Signatures (LINCS)</ins>
 
-Show the `LINCS` edge which maps `HGNC` nodes to `PUBCHEM` nodes (there is also a `negatively_regulated_by` relationship): 
+Show the `LINCS` relationship which maps `HGNC` nodes to `PUBCHEM` nodes (there is also a `negatively_regulated_by` relationship): 
 ```cypher
 MATCH (hgnc_cui:Concept)-[:CODE]->(hgnc_code:Code {SAB:'HGNC'})-[]->(hgnc_term:Term)
 MATCH (hgnc_cui)-[:positively_regulated_by {SAB:'LINCS'}]-(pubchem_cui:Concept)-[:CODE]-(pubchem_code:Code {SAB:'PUBCHEM'})
