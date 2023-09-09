@@ -25,6 +25,34 @@ MATCH (ensHum_cui)-[:RO ]-(hgnc_cui:Concept)-[:CODE]-(hgnc_code:Code {SAB:'HGNC'
 MATCH (mp_cui)-[:sex {SAB:'MOTRPAC'}]->(pato_cui:Concept)-[:PREF_TERM]-(pato_term:Term)
 RETURN * LIMIT 1
 ```
+
+
+
+Not working
+```cypher
+MATCH (mp_cui:Concept)-[:CODE]->(mp_code:Code {SAB:'MOTRPAC'}) 
+MATCH (mp_cui)-[:gender {SAB:'MOTRPAC'}]->(pato_cui:Concept)-[:PREF_TERM]-(pato_term:Term)
+WHERE mp_code.CODE CONTAINS 'liver'
+MATCH (mp_cui)-[:associated_with {SAB:'MOTRPAC'}]-(ensRat_cui:Concept)-[:CODE]->(ensRat_code:Code {SAB:'ENSEMBL'})
+MATCH (ensRat_cui)-[:has_human_ortholog]-(ensHum_cui:Concept)-[:CODE]-(ensHum_code:Code {SAB:'ENSEMBL'})
+MATCH (ensHum_cui)-[r]-(hgnc_cui:Concept)-[:CODE]-(hgnc_code:Code {SAB:'HGNC'})-[s]-(hgnc_term:Term)
+RETURN * LIMIT 1
+```
+
+But this  does. So ENSEMBL-to-HGNC mappings are there.
+```cypher
+MATCH (ensHum_cui:Concept)-[:CODE]-(ensHum_code:Code {SAB:'ENSEMBL'})
+MATCH (ensHum_cui)-[r {SAB:'GENCODE'}]-(hgnc_cui:Concept)-[:CODE]-(hgnc_code:Code {SAB:'HGNC'})-[s]-(hgnc_term:Term)
+RETURN * LIMIT 1
+```
+
+This is not working but each half is working individually.
+```cypher
+MATCH (ensRat_cui:Concept)-[:CODE]->(ensRat_code:Code {SAB:'ENSEMBL'})
+MATCH (ensRat_cui)-[:has_human_ortholog]-(ensHum_cui:Concept)-[:CODE]-(ensHum_code:Code {SAB:'ENSEMBL'})
+MATCH (ensHum_cui)-[r]-(hgnc_cui:Concept)-[:CODE]-(hgnc_code:Code {SAB:'HGNC'})-[s]-(hgnc_term:Term)
+RETURN * LIMIT 1
+```
 ----
 
 ## **Kids First**
