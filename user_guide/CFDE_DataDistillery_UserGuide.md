@@ -310,7 +310,30 @@ RETURN * LIMIT 1
 
 ### <ins>Extracellular RNA Communication Program (ERCC)</ins>
 
-`Need schema query here!`
+##### RBP
+Show the `ENCODE.RBS.150.NO.OVERLAP` node and its relationships to `ENSEMBL` and `UBERON` nodes.
+```cypher
+MATCH (a:Concept)-[:CODE]-(b:Code {SAB:'ENCODE.RBS.150.NO.OVERLAP'})
+MATCH (a)-[:overlaps {SAB:'ERCCRBP'}]-(c:Concept)-[:CODE]-(c_code:Code {SAB:'ENSEMBL'})
+MATCH (a)-[:correlated_in {SAB:'ERCCRBP'} ]-(d:Concept)-[:CODE]-(e:Code {SAB:'UBERON'})
+MATCH (d)-[:predicted_in]-(f:Concept)-[:molecularly_interacts_with]-(g:Concept)
+MATCH (g)-[:overlaps]-(c)
+RETURN * LIMIT 1
+```
+##### Regulatory Element
+Show the central `ENCODE.CCRE.ACTIVITY` node and its relationships to the rest of the `ENCODE.*` nodes, as well to an `ENSEMBL` node, an `UBERON` node and a `GTEXEQTL` node.
+```cypher
+MATCH (a:Concept)-[:CODE]-(b:Code {SAB:'ENCODE.CCRE.ACTIVITY'})
+MATCH (a)-[:part_of {SAB:'ERCCREG'}]-(c:Concept)-[:CODE]-(c_code:Code {SAB:'ENCODE.CCRE'})
+MATCH (a)-[:regulates {SAB:'ERCCREG'} ]-(d:Concept)-[:CODE]-(e:Code {SAB:'ENSEMBL'})
+MATCH (a)-[:isa]-(f:Concept)-[:CODE]-(g:Code {SAB:'ENCODE.CCRE.H3K4ME3'})
+MATCH (a)-[:isa]-(h:Concept)-[:CODE]-(i:Code {SAB:'ENCODE.CCRE.H3K27AC'})
+MATCH (a)-[:isa]-(j:Concept)-[:CODE]-(k:Code {SAB:'ENCODE.CCRE.CTCF'})
+MATCH (a)-[:part_of]-(l:Concept)-[:CODE]-(m:Code {SAB:'UBERON'})
+MATCH (c)-[:location_of]-(n:Concept)-[:CODE]-(o:Code {SAB:'CLINGEN.ALLELE.REGISTRY'})
+MATCH (d)-[:positively_regulates]-(p:Concept)-[:CODE]-(q:Code {SAB:'GTEXEQTL'})
+RETURN * LIMIT 1
+```
 
 ### <ins>GlyGen</ins>
 
