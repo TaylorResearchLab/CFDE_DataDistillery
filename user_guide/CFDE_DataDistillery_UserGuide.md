@@ -286,27 +286,29 @@ RETURN DISTINCT a.CodeID AS cCRE,p.CodeID AS Gene
 ### <ins>4D Nucleome (4DN)</ins>
 The following query extracts the `4DN` loop anchor-associated nodes in `HSCLO` (`r1` through `r4`). `r5` find the donut q-value associated with the loop where `r6` and `r7` retrieve the file and dataset containing a specific loop. `r8` finds which cell type has been used in the Hi-C experiment by `4DN`.
 ```cypher
-MATCH (loop_concept:Concept)-[r1:`4DN_loop_us_start` {SAB:'4DN'}
+MATCH (loop_concept:Concept)-[r1:loop_us_start {SAB:'4DN'}
 ]->(us_start_concept:Concept)-[:CODE]->(us_start_code:Code),//Loop upstream start node in HSCLO
-(loop_concept:Concept)-[r2:`4DN_loop_us_end` {SAB:'4DN'}
+(loop_concept:Concept)-[r2:loop_us_end {SAB:'4DN'}
 ]->(us_end_concept:Concept)-[:CODE]->(us_end_code:Code),//Loop upstream end node in HSCLO
-(loop_concept:Concept)-[r3:`4DN_loop_ds_start` {SAB:'4DN'}
+(loop_concept:Concept)-[r3:loop_ds_start {SAB:'4DN'}
 ]->(ds_start_concept:Concept)-[:CODE]->(ds_start_code:Code),//Loop downstream start node in HSCLO
-(loop_concept:Concept)-[r4:`4DN_loop_ds_end` {SAB:'4DN'}
+(loop_concept:Concept)-[r4:loop_ds_end {SAB:'4DN'}
 ]->(ds_end_concept:Concept)-[:CODE]->(ds_end_code:Code),//Loop downstream end node in HSCLO
-(loop_code:Code {SAB:'4DNL'})<-[:CODE]-(loop_concept:Concept)-[r5:`4DN_loop_has_qvalue_bin` {SAB:'4DN'}
+(loop_code:Code {SAB:'4DNL'})<-[:CODE]-(loop_concept:Concept)-[r5:loop_has_qvalue_bin {SAB:'4DN'}
 ]->(qvalue_bin_concept:Concept)-[:CODE]->(qvalue_bin_code:Code {SAB:'4DNQ'}
 ),//Loop q-value bin
-(file_code:Code {SAB:'4DNF'})<-[:CODE]-(file_concept:Concept)-[r6:`4DN_file_has_loop` {SAB:'4DN'}
+(file_code:Code {SAB:'4DNF'})<-[:CODE]-(file_concept:Concept)-[r6:file_has_loop {SAB:'4DN'}
 ]->(loop_concept:Concept),//File containing the loop
 (dataset_code:Code {SAB:'4DND'}
-)<-[:CODE]-(dataset_concept:Concept)-[r7:`4DN_dataset_has_file` {SAB:'4DN'}
+)<-[:CODE]-(dataset_concept:Concept)-[r7:dataset_has_file {SAB:'4DN'}
 ]->(file_concept:Concept),//Dataset containing the file
-(dataset_concept:Concept)-[r8:`4DN_dataset_involves_cell_type` {SAB:'4DN'}
-]->(cell_type_concept:Concept)-[:PREF_TERM]->(cell_type_term:Term )//Cell type used in the experiment
+(dataset_concept:Concept)-[r8:dataset_involves_cell_type {SAB:'4DN'}
+]->(cell_type_concept:Concept)-[:PREF_TERM]->(cell_type_term:Term ),//Cell type used in the experiment
+(dataset_concept:Concept)-[r9:has_assay_type {SAB:'4DN'}
+]->(assay_type_concept:Concept)-[:PREF_TERM]->(assay_type_term:Term)//Assay type associated with experiments
 RETURN * LIMIT 1
 ```
-<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/4DN.png" width="500" height="450">
+<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/4DN.png" width="550" height="450">
 
 ### <ins>Extracellular RNA Communication Program (ERCC)</ins>
 
@@ -385,8 +387,12 @@ RETURN * LIMIT 1
 
 ### <ins>The Human BioMolecular Atlas Program (HuBMAP)</ins>
 
+The query extracts genes associated with the `HubMAP Azimuth` clusters in human heart, liver and kidney.
+
 ```cypher
+MATCH (azimuth_term:Term)-[:PT]-(azimuth_code:Code {SAB:"AZ"})-[:CODE]-(azimuth_concept:Concept)-[r1 {SAB:"HMAZ"}]->(gene_concept:Concept)-[:CODE]-(gene_code:Code {SAB:"HGNC"}), (azimuth_concept:Concept)-[:isa]->(CL_concept:Concept)-[:CODE]-(CL_code:Code {SAB:"CL"})-[:PT]-(CL_term:Term) RETURN * LIMIT 1
 ```
+<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/AZ.png" width="750" height="550">
 
 ### <ins>Illuminating the Druggable Genome (IDG)</ins>
 
