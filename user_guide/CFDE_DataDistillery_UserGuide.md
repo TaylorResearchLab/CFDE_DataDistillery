@@ -201,6 +201,8 @@ MATCH (glycoreaction_code:Code)<-[:CODE]-(glycoreaction_concept:Concept)-[r1:has
 (tissue_concept:Concept)-[:PREF_TERM]-(tissue:Term {name:tissue_name})
 RETURN * LIMIT 1
 ```
+<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/GlYGEN_KF_GTEX.png" width="850" height="600">
+
 Tabular Output
 
 ```cypher
