@@ -209,7 +209,7 @@ MATCH (glycoreaction_code:Code)<-[:CODE]-(glycoreaction_concept:Concept)-[r1:has
 (gene_concept:Concept)-[:PREF_TERM]->(gene:Term),
 (glycoenzyme_concept:Concept)-[:PREF_TERM]->(glycoenzyme:Term),
 (tissue_concept:Concept)-[:PREF_TERM]-(tissue:Term {name:tissue_name})
-RETURN DISTINCT gene.name,tissue.name,glycoenzyme.name,bin_code.value as variant_count,exp_code.CODE AS liver_expression
+RETURN DISTINCT gene.name,tissue.name,glycoenzyme.name,bin_code.value AS variant_count,exp_code.CODE AS liver_expression
 ```
 
 ### <ins>ERCC</ins>
