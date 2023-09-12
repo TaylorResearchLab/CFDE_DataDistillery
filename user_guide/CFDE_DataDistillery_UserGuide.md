@@ -201,9 +201,7 @@ MATCH (glycoreaction_code:Code)<-[:CODE]-(glycoreaction_concept:Concept)-[r1:has
 (tissue_concept:Concept)-[:PREF_TERM]-(tissue:Term {name:tissue_name})
 RETURN * LIMIT 1
 ```
-<img src="https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/images/GLYGEN_KF_GTEX.png" width="800" height="450">
 Tabular Output
-
 ```cypher
 WITH "Myocardium of left ventricle" AS tissue_name
 MATCH (glycoreaction_code:Code)<-[:CODE]-(glycoreaction_concept:Concept)-[r1:has_enzyme_protein {SAB:"GLYCANS"}]->(glycoenzyme_concept:Concept)-[r2:gene_product_of]->(gene_concept:Concept)-[r3]-(bin_concept:Concept)-[:CODE]->(bin_code:Code {SAB:"KFGENEBIN"}),(tissue_concept:Concept)-[r4:expresses {SAB:"GTEXEXP"}]->(gtexexp_concept:Concept)-[r5 {SAB:"GTEXEXP"}]->(gene_concept:Concept),(gtexexp_concept:Concept)-[r6:has_expression {SAB:"GTEXEXP"}]->(exp_concept:Concept)-[:CODE]-(exp_code:Code),
