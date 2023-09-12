@@ -1,4 +1,6 @@
-# Guide for exploring the Data Distillery knowledge graph using Cypher
+# User Guide for the CFDE Data Distillery Knowledge Graph
+
+## Guide for exploring the Data Distillery knowledge graph using Cypher
 
 * This guide is meant to be an introduction for how to write Cypher queries to explore the Data Distillery Knowledge graph. A basic understanding of Cypher is assumed. If you are unfamiliar with Cypher please refer to the [Neo4j docs](https://neo4j.com/developer/cypher/). 
 * For documentation concerning how the Data Distillery knowledge graph is generated or for information about the general schema of the graph please see our [github docs page](https://ubkg.docs.xconsortia.org). For documentation concerning the specific schema for a DCCs dataset please see our [Data Dictionary](https://docs.google.com/document/d/1ubKqkQb40rC7jKRxY9z-SxtsdKqRNZg3Nvds8SpTIbM/edit).
@@ -123,7 +125,7 @@ LIMIT 10
 
 
 
-# DCC Use Cases
+## DCC Use Cases
 
 
 ### <ins>IDG and Metabolomics Workbench (MW)</ins>
@@ -133,7 +135,7 @@ For example, if a study would like to propose biomarkers (MW) associated with th
 Query description: intersection of MW and IDG; compounds that regulate products of genes (IDG) that causally influence metabolites correlated with conditions (MW), with tissues and conditions directly connected through a single relationship (e.g. DOID).
 Disease-tissue relationships are used as a filter to obtain metabolite-tissue-condition triangles that are affected by a certain compound through gene product perturbations.
 
-Graphical Reprentation 
+Graphical Representation 
 ```cypher
 MATCH (compound_concept:Concept)-[r1:bioactivity {SAB:"IDGP"}]->(protein_concept:Concept)-[r2:gene_product_of {SAB:"UNIPROTKB"}]->(gene_concept:Concept)-[r3:causally_influences {SAB:"MW"}]->(metabolite_concept:Concept)-[r4:correlated_with_condition {SAB:"MW"}]->(condition_concept:Concept)-[]->(tissue_concept:Concept)<-[r5:produced_by {SAB:"MW"}]-(metabolite_concept:Concept) 
 WITH * MATCH (compound_concept:Concept)-[:PREF_TERM]-(compound:Term),
@@ -157,8 +159,9 @@ WITH * MATCH (compound_concept:Concept)-[:PREF_TERM]-(compound:Term),
 ```
 ### <ins>MOTRPAC, LINCS and GTEx</ins>
 
-MoTrPAC Genes affected by exercise, are expressed in matched tissues in humans in GTEx, that are either matches or inverse matches of a perturbation signal in LINCS = compounds or perturbations that might promote or interfere with exercise benefit
-Graphical Reprentation 
+This query identifies MoTrPAC Genes that are 1) affected by exercise, 2) are expressed in matched tissues in humans in GTEx, and 3) that are either matches or inverse matches of a perturbation signal in LINCS. Result list of compounds could be further explored as candidates to promote or interfere with exercise benefit.
+
+Graphical Representation 
 ```cypher
 MATCH (motrpac_code:Code {SAB:"MOTRPAC"})<-[:CODE]-(motrpac_concept:Concept)-[r1:associated_with]->(rat_gene_concept:Concept)-[r2:has_human_ortholog]->(hgnc_concept:Concept)<-[r3 {SAB:"LINCS"}]-(perturbagen_concept:Concept),
 (motrpac_concept:Concept)-[r4:located_in]->(tissue_concept_1:Concept)-[r5:part_of]-(tissue_concept_2:Concept)-[r6:expresses {SAB:"GTEXEXP"}]->(gtex_concept:Concept)-[r7:expressed_in {SAB:"GTEXEXP"}]-(hgnc_concept:Concept),
@@ -483,7 +486,7 @@ RETURN * LIMIT 1
 ```
 
 
-# Tips and Tricks
+## Tips and Tricks
 
 - You might notice that some queries have a `MATCH` statement for every line such as these [GTEx queries](https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/user_guide/CFDE_DataDistillery_UserGuide.md#genotype-tissue-expression-gtex) , while other queries have a single `MATCH` statement followed by several patterns seperated by a comma such as these [GlyGen queries](https://github.com/TaylorResearchLab/CFDE_DataDistillery/blob/main/user_guide/CFDE_DataDistillery_UserGuide.md#glygen-1). Both styles produce identical query plans, they just represent two different syntax styles.
 
