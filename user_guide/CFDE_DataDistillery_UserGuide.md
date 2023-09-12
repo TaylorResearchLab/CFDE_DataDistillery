@@ -186,7 +186,6 @@ RETURN DISTINCT motrpac_code.CODE AS MoTrPac_DS, rat_gene_code.CODE AS rat_gene,
 ```
 
 ### <ins>GlyGen</ins>
-`insert`
 
 ### <ins>ERCC</ins>
 
