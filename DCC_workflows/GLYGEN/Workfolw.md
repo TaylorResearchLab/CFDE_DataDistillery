@@ -17,4 +17,4 @@ Finally, the resulting graph nodes and edges were exported as .csv files using A
 ```cypher
 CALL apoc.export.csv.all("glycans", {})
 ```
-The resulting nodes and edges reformatted by curating the relationship names and adding SABs for all entities (either by using existing SABs e.g. UNIPROTKB and GLYTOUCAN or creating custom SABs e.g. GLYGEN.MOTIF or GLYCOPROTEIN) and saved as the OWLNETS_node_metadata.tsv and OWLNETS_edgelist.tsv for ingestion.
+The resulting nodes and edges were reformatted by curating the relationship names and adding SABs for all entities (either by using existing SABs e.g. UNIPROTKB and GLYTOUCAN or creating custom SABs such as GLYGEN.MOTIF or GLYCOPROTEIN) and saved as the OWLNETS_node_metadata.tsv and OWLNETS_edgelist.tsv for ingestion.
