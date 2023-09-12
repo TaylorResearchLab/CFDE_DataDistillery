@@ -453,7 +453,7 @@ RETURN * LIMIT 1
 
 ### <ins>Stimulating Peripheral Activity to Relieve Conditions (SPARC)</ins>
 
-Show an `ILX` node and its relationship to an `UBERON` Nnode
+Show an `ILX` node and its relationship to an `UBERON` node.
 ```cypher
 MATCH (ub_term:Term)-[a:PT]-(uberon_code:Code)-[b:CODE]-(ub_cui:Concept)-[c:isa {SAB:'NPO'}]-(ilx_cui:Concept)-[d:CODE]-(ilx_code:Code {SAB:'ILX'})-[e:PT_NPOSKCAN]-(ilx_term:Term) 
 RETURN * LIMIT 1
