@@ -195,9 +195,8 @@ RETURN DISTINCT motrpac_code.CODE AS MoTrPac_DS, rat_gene_code.CODE AS rat_gene,
 
 ### <ins>GlyGen, KF and GTEx</ins>
 
-Birth defects could be caused by dysregulation of glycosylation  
-Certain heart defects have been shown to be associated with loss of glycosylation (e.g. heterotaxy). KF heart defect cohort (711 subjects) may have evidence of genetic variants affecting glycosylation genes.
-KF deleterious variants that lead to loss of glycosylation by affecting glycoenzymes and glycoenzyme expression in the GTEx liver dataset 
+Birth defects could be caused by dysregulation of glycosylation (PMC6331365). Certain heart defects have been shown to be associated with loss of glycosylation (e.g. heterotaxy, PMC3869867). KF heart defect cohort (711 subjects) may have evidence of genetic variants affecting glycosylation genes. A question could be, which KF deleterious variants could lead to loss of glycosylation by affecting glycoenzymes and glycoenzyme expression, specifically for those genes found in the GTEx heart dataset ?
+
 Query Description: Intersection of `GLYGEN`, `KF` and `GTEX`. The query retrieves Glycoreactions {SAB:”GLYCOSYLTRANSFERASE.REACTION”} and subsequently Glycoenzymes data from GLYCANS dataset. Associated genes, their expression and variant count are obtained from `GTEXEXP` and `KF` datatsets respectively. 
 
 ```cypher
